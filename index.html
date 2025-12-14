@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>بيتنا الجميل</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+:root {
+    --bg-living: #FFEBEE;
+    --bg-kitchen: #E0F7FA;
+    --neo-black: #0d0d0d;
+    --neo-white: #ffffff;
+    --neo-pink: #FF4081;
+    --neo-yellow: #FFEB3B;
+    --neo-green: #00E676;
+    --neo-blue: #2979FF;
+    --neo-purple: #D500F9;
+    --border: 3px solid var(--neo-black);
+    --shadow: 4px 4px 0px rgba(0,0,0,0.8);
+    --shadow-active: 2px 2px 0px rgba(0,0,0,0.8);
+}
+@font-face { font-family: 'NeoFont'; src: local('Impact'), local('Arial Black'), sans-serif; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+    margin: 0; overflow: hidden; font-family: 'Tahoma', sans-serif;
+    background: #1a1a1a; touch-action: none; user-select: none; color: var(--neo-black);
+    direction: rtl;
+}
+.neo-box {
+    background: var(--neo-white);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    font-weight: bold;
+}
+.neo-btn {
+    background: linear-gradient(135deg, var(--neo-yellow) 0%, #FBC02D 100%);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    padding: 10px 15px;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 44px; min-height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+}
+.neo-btn::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255,255,255,0.2); opacity: 0; transition: opacity 0.2s;
+}
+.neo-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-active);
+    background: var(--neo-pink); color: white;
+}
+.neo-btn:active::after { opacity: 1; }
+
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 2000; display: none;
+    justify-content: center; align-items: center;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-box {
+    padding: 25px; text-align: center;
+    max-width: 450px; width: 95%; max-height: 85vh; overflow-y: auto;
+    background: var(--neo-white); border: 4px solid var(--neo-black);
+    box-shadow: 10px 10px 0px var(--neo-black);
+    border-radius: 16px;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+#splash-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    z-index: 5000; display: flex; flex-direction: column; 
+    align-items: center; justify-content: space-between;
+    transition: opacity 0.5s; overflow: hidden;
+}
+.stars {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 50px 50px; opacity: 0.5; pointer-events: none;
+}
+.santa-wrapper {
+    position: absolute; top: 15%; width: 100%; height: 60px; pointer-events: none;
+}
+.santa {
+    position: absolute; font-size: 40px;
+    animation: santaFly 8s linear infinite;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+}
+@keyframes santaFly {
+    0% { transform: translateX(120vw) translateY(0) scaleX(1); }
+    25% { transform: translateX(50vw) translateY(20px) scaleX(1); }
+    50% { transform: translateX(-20vw) translateY(0) scaleX(1); }
+    100% { transform: translateX(-20vw) translateY(0) scaleX(1); }
+}
+.snow-container {
+    position: absolute; width: 100%; height: 100%; pointer-events: none;
+}
+.snowflake {
+    position: absolute; color: white; opacity: 0.8;
+    animation: fall linear infinite; top: -20px;
+}
+@keyframes fall { to { transform: translateY(110vh); } }
+
+.splash-content {
+    z-index: 10; display: flex; flex-direction: column; align-items: center;
+    margin-top: 15vh;
+}
+.splash-title {
+    font-family: 'NeoFont', sans-serif; font-size: 60px; color: var(--neo-yellow);
+    text-shadow: 4px 4px 0px #000, 0 0 20px rgba(255,215,0,0.5); 
+    margin-bottom: 20px; transform: rotate(-3deg);
+    animation: floatTitle 3s ease-in-out infinite;
+}
+@keyframes floatTitle { 0%,100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(-3deg) translateY(-10px); } }
+
+.scene {
+    width: 100%; height: 200px; position: relative;
+    display: flex; justify-content: center; align-items: flex-end;
+    padding-bottom: 40px;
+}
+.ground-snow {
+    position: absolute; bottom: 0; width: 100%; height: 60px;
+    background: white; border-top: 4px solid #000;
+    border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+}
+.s-house {     font-size: 272px;
+    z-index: 0;
+    position: relative;
+    bottom: -22px;
+    filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.5));}
+.s-tree { font-size: 80px; position: absolute; left: 50%; margin-left: -140px; bottom: 20px; z-index: 1; animation: treeShake 3s infinite; }
+.s-bear-group { 
+    position: absolute; right: 50%; margin-right: -150px; bottom: 20px; 
+    display: flex; gap: 5px; z-index: 3; align-items: flex-end;
+}
+.s-bear { font-size: 90px; animation: bounce 2s infinite; position: relative; }
+.s-chick { font-size: 50px; animation: bounce 2s infinite 0.2s; position: relative; }
+
+.splash-bubble {
+    position: absolute; bottom: 110px; right: 20px;
+    background: var(--neo-white); color: var(--neo-black);
+    padding: 8px 12px; border-radius: 12px; border: 2px solid var(--neo-black);
+    font-size: 14px; white-space: nowrap; width: max-content;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    z-index: 10; animation: floatTitle 2s ease-in-out infinite;
+}
+.splash-bubble::after {
+    content: ''; position: absolute; top: 100%; right: 20px;
+    border-width: 6px; border-style: solid; 
+    border-color: var(--neo-white) transparent transparent transparent;
+}
+#splash-hearts-container {
+    position: absolute; top: -40px; left: 0; width: 100%; height: 50px;
+    pointer-events: none;
+}
+.splash-heart-anim {
+    position: absolute; font-size: 20px; animation: floatUp 1.5s infinite linear;
+}
+
+@keyframes treeShake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } }
+
+#hud {
+    position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+    z-index: 1000; display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 10px; background: rgba(255,255,255,0.95);
+    border-bottom: var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(5px);
+}
+.hud-grp { display: flex; align-items: center; gap: 8px; height: 100%; }
+.hud-stat {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 12px; line-height: 1.1; font-weight: 900;
+}
+.bar-con {
+    width: 80px; height: 14px; border: 2px solid var(--neo-black);
+    background: #333; border-radius: 8px; overflow: hidden; position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+.bar-fill { height: 100%; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+.bar-fill::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent);
+    background-size: 10px 10px;
+}
+#anger-fill { background: linear-gradient(90deg, #ff9a9e 0%, #ff6b6b 100%); }
+#xp-fill { background: linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%); }
+
+#world { 
+    position: absolute; top: 70px; width: 100vw; height: calc(100vh - 70px); 
+    display: flex; direction: ltr; overflow: hidden;
+}
+#zone-living {
+    flex: 1; background-color: var(--bg-living); position: relative; border-right: var(--border);
+    background-image: radial-gradient(#ffcdd2 2px, transparent 2px); background-size: 30px 30px;
+}
+#zone-kitchen {
+    flex: 1; background-color: var(--bg-kitchen); position: relative;
+    background-image: linear-gradient(45deg, #b2ebf2 25%, transparent 25%, transparent 75%, #b2ebf2 75%), linear-gradient(45deg, #b2ebf2 25%, transparent 25%, transparent 75%, #b2ebf2 75%);
+    background-position: 0 0, 15px 15px; background-size: 30px 30px;
+}
+
+.obj {
+    position: absolute; display: flex; flex-direction: column; align-items: center;
+    font-size: 36px; cursor: pointer; z-index: 10;
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(2px 4px 0px rgba(0,0,0,0.2));
+}
+.obj:active { transform: scale(0.9) rotate(5deg); filter: drop-shadow(1px 2px 0px rgba(0,0,0,0.2)); }
+.obj-label {
+    font-size: 10px; background: var(--neo-black); color: var(--neo-white);
+    padding: 3px 8px; margin-top: -5px; pointer-events: none;
+    font-weight: bold; border-radius: 10px; border: 1px solid white;
+}
+.prog-bar { 
+    width: 44px; height: 10px; background: var(--neo-white); border: 2px solid var(--neo-black); 
+    display: none; margin-bottom: 2px; position: relative; border-radius: 4px; overflow: hidden;
+    z-index: 15;
+}
+.prog-fill { width: 0%; height: 100%; background: var(--neo-green); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2); }
+.obj-img { width: 50px; height: 50px; object-fit: contain; pointer-events: none; }
+
+#fridge { 
+    left: 5px; top: 10px; width: 60px; height: 90px; 
+    background: linear-gradient(135deg, #ffffff 0%, #cfd8dc 100%);
+    border: 3px solid #455A64; border-radius: 8px; position: relative;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+}
+#fridge::before {
+    content: ''; position: absolute; top: 30%; left: 0; width: 100%; height: 2px; background: #455A64;
+}
+.fridge-handle {
+    position: absolute; right: 6px; width: 6px; background: #90A4AE; 
+    border: 1px solid #455A64; border-radius: 3px; box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+
+#stove, #oven, #prep, #fryer, #icecream, #coffee-machine, #snacks-area, #cow-station, #sink, #plate-station, #sushi-maker { font-size: 32px; }
+#stove2, #prep2, #fryer2, #oven2 { font-size: 32px; display: none; }
+#shower, #bed, #tv, #sofa, #chair, #kissing-bench { font-size: 40px; }
+#dirty-plates { 
+    position: absolute; top: -15px; right: -10px; 
+    background: var(--neo-pink); color: white; 
+    border: 2px solid black; width: 28px; height: 28px; border-radius: 50%;
+    font-size: 14px; display: none; align-items: center; justify-content: center; z-index: 20;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.3); animation: bounce 1s infinite;
+}
+
+#heba {
+    position: absolute; width: 50px; height: 50px; font-size: 45px; z-index: 100;
+    pointer-events: none; transition: top 0.3s linear, left 0.3s linear;
+    display: flex; justify-content: center;
+    filter: drop-shadow(0 4px 2px rgba(0,0,0,0.3));
+}
+#heba-stats {
+    position: absolute; top: -30px; background: rgba(255,255,255,0.95);
+    border: 2px solid black; border-radius: 12px; padding: 4px 10px;
+    font-size: 12px; font-weight: bold; white-space: nowrap; display: flex; gap: 8px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+}
+#inventory { position: absolute; top: -65px; display: flex; gap: -5px; }
+.inv-item { 
+    font-size: 20px; background: var(--neo-white); padding: 5px; 
+    border: 2px solid var(--neo-black); border-radius: 50%; 
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2); z-index: 1;
+}
+
+#bear-container {
+    position: absolute; width: 80px; height: 80px; z-index: 50;
+    transition: top 1s ease, left 1s ease; cursor: pointer;
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3));
+}
+#the-bear { font-size: 70px; text-align: center; position: absolute; bottom: 0; width: 100%; }
+#orders-container {
+    position: absolute; bottom: 95px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 60;
+}
+#speech-bubble {
+    position: absolute; bottom: 170px; left: 50%; transform: translateX(-50%);
+    background: var(--neo-black); color: var(--neo-white); padding: 10px 16px;
+    font-size: 15px; white-space: nowrap; pointer-events: none; opacity: 0; 
+    transition: opacity 0.3s; z-index: 70; border-radius: 16px;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.3); border: 2px solid white;
+}
+#speech-bubble::after {
+    content: ''; position: absolute; top: 100%; left: 50%; margin-left: -8px;
+    border-width: 8px; border-style: solid; border-color: var(--neo-black) transparent transparent transparent;
+}
+.order-bubble {
+    background: var(--neo-white); border: 2px solid var(--neo-black); padding: 8px;
+    min-width: 50px; text-align: center; box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+    animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex; gap: 8px; align-items: center; justify-content: center;
+    border-radius: 12px;
+}
+.cooldown-circle {
+    width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(var(--neo-pink) 0%, #eee 0%);
+    border: 2px solid var(--neo-black);
+}
+
+.rat { 
+    position: absolute; font-size: 32px; transition: top 0.5s linear, left 0.5s linear; 
+    z-index: 60; cursor: crosshair; filter: drop-shadow(2px 4px 2px rgba(0,0,0,0.4));
+}
+.dirt-obj {
+    position: absolute; font-size: 28px; cursor: pointer; z-index: 5; opacity: 0.9;
+    animation: pulse 2s infinite;
+}
+.kisses-effect {
+    position: absolute; font-size: 36px; animation: floatUp 1.5s forwards; pointer-events: none; z-index: 80;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+
+#sleep-game, #kissing-game, #washing-game {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.92); z-index: 4000; display: none; overflow: hidden;
+    touch-action: none; flex-direction: column; align-items: center; justify-content: center;
+}
+#sleep-game { background: linear-gradient(135deg, #304FFE 0%, #1A237E 100%); z-index: 3000; justify-content: flex-start; }
+
+#sleep-img {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 10; cursor: pointer;
+    transition: transform 0.05s;
+}
+#sleep-img:active { transform: scale(0.98); }
+.shake { animation: shake 0.5s; }
+
+#happiness-meter { 
+    position: absolute; top: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20;
+}
+#happy-text { color: var(--neo-yellow); font-family: 'NeoFont'; font-size: 28px; text-shadow: 3px 3px 0px var(--neo-black); margin-bottom: 8px; }
+#happy-bar-container { width: 220px; height: 24px; background: #fff; border: 3px solid #000; border-radius: 12px; overflow: hidden; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
+#happy-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #F48FB1 0%, #F06292 100%); transition: width 0.1s linear; }
+
+#washing-plate-container, #kissing-plate-container {
+    position: relative; width: 300px; height: 300px; 
+    background: radial-gradient(circle at 30% 30%, #fff, #f0f0f0); border-radius: 50%; display: flex; 
+    align-items: center; justify-content: center;
+    border: 8px solid #90A4AE; box-shadow: 0 0 50px rgba(255,255,255,0.1);
+}
+.wash-poop, .kiss-point {
+    position: absolute; font-size: 45px; cursor: pointer;
+    animation: bounce 1s infinite;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+}
+
+@keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+@keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-60px) scale(1.5); opacity: 0; } }
+@keyframes shake { 0% { transform: translate(1px, 1px); } 20% { transform: translate(-3px, 0); } 40% { transform: translate(1px, -1px); } 60% { transform: translate(-3px, 1px); } 80% { transform: translate(-1px, -1px); } 100% { transform: translate(0, 0); } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+.grid-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 15px 0; }
+.menu-btn {
+    background: linear-gradient(to bottom, #f0f0f0, #e0e0e0); border: 2px solid var(--neo-black); padding: 12px; font-size: 24px;
+    box-shadow: 3px 3px 0px var(--neo-black); cursor: pointer; border-radius: 8px;
+    transition: transform 0.1s;
+}
+.menu-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--neo-black); }
+
+.hacker-btn { background: #ff0000; width: 20px; height: 20px; border-radius: 50%; border: 2px solid black; cursor: pointer; }
+.shop-item { display: flex; flex-direction: column; align-items: center; border: 2px solid black; padding: 8px; border-radius: 12px; background: white; box-shadow: 3px 3px 0px rgba(0,0,0,0.1); }
+.shop-buy-btn { 
+    background: var(--neo-green); color: white; border: none; padding: 6px; width: 100%; 
+    cursor: pointer; margin-top: 5px; font-weight: bold; border-radius: 6px; 
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+.shop-owned { background: #BDBDBD; cursor: default; }
+.shop-nav { display: flex; justify-content: center; margin-top: 15px; gap: 10px; }
+.tab-btn { background: #eee; border: 2px solid black; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+.tab-btn.active { background: var(--neo-yellow); transform: translateY(-2px); box-shadow: 2px 2px 0 black; }
+</style>
+</head>
+<body>
+
+<audio id="bg-music" loop src="https://assets.mixkit.co/music/preview/mixkit-sleepy-cat-135.mp3"></audio>
+<audio id="sfx-click" src="https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3"></audio>
+<audio id="sfx-pop" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+<audio id="sfx-success" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+<audio id="sfx-wash" src="https://assets.mixkit.co/active_storage/sfx/170/170-preview.mp3"></audio>
+<audio id="sfx-kiss" src="https://assets.mixkit.co/active_storage/sfx/1429/1429-preview.mp3"></audio>
+<audio id="sfx-cook" src="https://assets.mixkit.co/active_storage/sfx/181/181-preview.mp3"></audio>
+<audio id="sfx-bear" src="https://assets.mixkit.co/active_storage/sfx/252/252-preview.mp3"></audio>
+<audio id="sfx-modal" src="https://assets.mixkit.co/active_storage/sfx/2044/2044-preview.mp3"></audio>
+<audio id="sfx-step" src="https://assets.mixkit.co/active_storage/sfx/2044/2044-preview.mp3"></audio>
+
+<audio id="sfx-ding" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+<audio id="sfx-fridge" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+<audio id="sfx-fry" src="https://assets.mixkit.co/active_storage/sfx/181/181-preview.mp3"></audio>
+<audio id="sfx-chop" src="https://assets.mixkit.co/active_storage/sfx/252/252-preview.mp3"></audio>
+<audio id="sfx-water" src="https://assets.mixkit.co/active_storage/sfx/170/170-preview.mp3"></audio>
+<audio id="sfx-tv" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+<audio id="sfx-clean" src="https://assets.mixkit.co/active_storage/sfx/2044/2044-preview.mp3"></audio>
+
+<div id="splash-screen" onclick="Game.initSplash()">
+    <div class="stars"></div>
+    <div class="santa-wrapper">
+        <div class="santa">🎅🛷🦌</div>
+    </div>
+    
+    <div class="splash-content">
+        <div class="splash-title">OUR HOUSE</div>
+        <div class="neo-btn" style="font-size: 24px; padding: 15px 40px; animation: pulse 2s infinite; z-index: 20;">اضغطي عشان تبدأي</div>
+    </div>
+
+    <div class="scene">
+        <div class="s-tree">🎄</div>
+        <div class="s-house">🏠</div>
+        <div class="s-bear-group">
+            <div id="splash-bear-msg" class="splash-bubble"></div>
+            <span class="s-bear">🧸</span>
+            <span class="s-chick">
+                🐥
+                <div id="splash-chick-hearts" id="splash-hearts-container"></div>
+            </span>
+        </div>
+        <div class="ground-snow"></div>
+    </div>
+    
+    <div class="snow-container" id="snow-container">
+        <div class="snowflake" style="left: 10%; animation-duration: 5s; animation-delay: 0s;">❄</div>
+        <div class="snowflake" style="left: 20%; animation-duration: 7s; animation-delay: 1s;">❅</div>
+        <div class="snowflake" style="left: 30%; animation-duration: 4s; animation-delay: 2s;">❄</div>
+        <div class="snowflake" style="left: 45%; animation-duration: 6s; animation-delay: 0.5s;">❆</div>
+        <div class="snowflake" style="left: 60%; animation-duration: 5s; animation-delay: 1.5s;">❄</div>
+        <div class="snowflake" style="left: 75%; animation-duration: 8s; animation-delay: 2.5s;">❅</div>
+        <div class="snowflake" style="left: 85%; animation-duration: 4.5s; animation-delay: 0.2s;">❄</div>
+        <div class="snowflake" style="left: 95%; animation-duration: 6.5s; animation-delay: 1.2s;">❆</div>
+    </div>
+</div>
+
+<div id="hud">
+    <div class="hud-grp" style="width: 100px;">
+        <button class="neo-btn" onclick="Game.toggleShop()">🛒</button>
+        <button class="neo-btn" onclick="Game.openRecipes()">📖</button>
+    </div>
+    
+    <div class="hud-grp" style="flex: 1; justify-content: center; background: linear-gradient(to bottom, #ffffff, #f5f5f5); border: 2px solid black; border-radius: 8px; padding: 0 10px; height: 50px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
+        <div class="hud-stat"><span>حياة</span><span id="ui-lives" style="color:var(--neo-pink); font-size:16px;">💛💛💛💛</span></div>
+        <div style="width:2px; height:20px; background:#ccc; margin:0 8px;"></div>
+        <div class="hud-stat"><span>XP باقي</span><span id="ui-xp-left" style="font-size:16px; color: var(--neo-purple);">0</span></div>
+    </div>
+
+    <div class="hud-grp" style="width: 90px; flex-direction: column; justify-content: center; align-items: flex-end; gap: 2px;">
+        <div style="font-size:10px; font-weight:bold; color: var(--neo-pink);">الزعل 😡</div>
+        <div class="bar-con"><div id="anger-fill" class="bar-fill" style="width:0%"></div></div>
+        <div style="font-size:10px; font-weight:bold; color: var(--neo-purple);">الخبرة 🆙</div>
+        <div class="bar-con"><div id="xp-fill" class="bar-fill" style="width:0%"></div></div>
+    </div>
+</div>
+
+<div id="start-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h1 style="color:var(--neo-pink); text-shadow: 2px 2px 0px rgba(0,0,0,0.1);">ازيك ياحياتي 🐥</h1>
+        <p style="font-size:16px; line-height:1.6; background: #f9f9f9; padding: 10px; border-radius: 8px;">١.اكلي الدببدوب و اقعدي معاه يا كتكوت<br>٢. ممنوع الغلط (عدد المحاولات محدود)<br>٣. جمعي خبرة عشان تخلصي المستوى</p>
+        <div id="start-info" style="margin: 10px 0; font-size: 14px; color: var(--neo-blue); font-weight: bold;"></div>
+        <button class="neo-btn" style="width:100%; margin-top:15px; background:var(--neo-green);" onclick="Game.start()">يلا نبدأ</button>
+    </div>
+</div>
+
+<div id="level-complete-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h1 style="color:var(--neo-green); text-shadow: 2px 2px 0px rgba(0,0,0,0.1);">🎉 مبروك يا شطورة</h1>
+        <div id="level-stats"></div>
+        <button class="neo-btn" style="width:100%; margin-top:20px; background:var(--neo-blue); color:white;" onclick="Game.nextLevel()">المستوى اللي بعده</button>
+    </div>
+</div>
+
+<div id="game-over-modal" class="modal-overlay">
+    <div class="modal-box" style="border-color: var(--neo-pink);">
+        <h1 style="color:var(--neo-pink); text-shadow: 2px 2px 0px rgba(0,0,0,0.1);">خسرتي يا هبله قلبي.... 😂</p>
+        <button class="neo-btn" style="width:100%; background:var(--neo-yellow);" onclick="Game.restartLevel()">جربي تاني</button>
+    </div>
+</div>
+
+<div id="generic-menu-modal" class="modal-overlay" onclick="if(event.target===this) Game.closeModals()">
+    <div class="modal-box">
+        <h2 id="menu-title" style="border-bottom: 2px solid #eee; padding-bottom: 10px;">القائمة</h2>
+        <div id="shop-tabs" class="shop-nav" style="display:none; margin-bottom:10px;"></div>
+        <div class="grid-menu" id="menu-grid"></div>
+        <div id="menu-footer"></div>
+        <button class="neo-btn" style="width:100%; background:#e0e0e0; margin-top:10px;" onclick="Game.closeModals()">قفل</button>
+    </div>
+</div>
+
+<div id="hacker-modal" class="modal-overlay" onclick="if(event.target===this) Game.closeModals()">
+    <div class="modal-box">
+        <h2 style="color: red;">HACKER PANEL 💻</h2>
+        <div id="hacker-stats" style="background:#000; color:#0f0; padding:10px; font-family:monospace; font-size:12px; text-align:left; margin-bottom:15px; border-radius:8px;"></div>
+        
+        <div style="margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:10px;">
+            <div style="font-weight:bold; margin-bottom:5px;">Level Selector</div>
+            <div style="display:flex; gap:5px;">
+                <select id="hack-lvl-sel" class="neo-btn" style="flex:1; background:white; font-size:14px;"></select>
+                <button class="neo-btn" onclick="Game.setHackLevel()" style="background:var(--neo-blue); color:white;">Go</button>
+            </div>
+        </div>
+
+        <div style="margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:10px;">
+            <div style="font-weight:bold; margin-bottom:5px;">Set Money</div>
+            <div style="display:flex; gap:5px;">
+                <input id="hack-cash-in" type="number" class="neo-btn" style="flex:1; background:white;" placeholder="$$$">
+                <button class="neo-btn" onclick="Game.setHackCash()" style="background:var(--neo-green);">Set</button>
+            </div>
+        </div>
+
+        <div class="grid-menu" style="grid-template-columns: 1fr 1fr;">
+            <button class="menu-btn" onclick="Bear.addOrder('specific_food')">+ Food Demand</button>
+            <button class="menu-btn" onclick="Bear.addOrder('quality_time')">+ Quality Demand</button>
+            <button class="menu-btn" onclick="Bear.addOrder('kisses')">+ Kisses Demand</button>
+            <button class="menu-btn" onclick="Game.winLevel()">Win Level</button>
+            <button class="menu-btn" onclick="Game.gameOver()">Fail Level</button>
+            <button class="menu-btn" onclick="Bear.anger=0; Bear.updateStats()">Calm Bear</button>
+            <button class="menu-btn" onclick="Game.unlockAll()">Unlock All</button>
+        </div>
+        <button class="neo-btn" onclick="Game.closeModals()">Close</button>
+    </div>
+</div>
+
+<div id="recipe-modal" class="modal-overlay" onclick="if(event.target===this) Game.closeModals()">
+    <div class="modal-box">
+        <h2>كتاب الوصفات 📖</h2>
+        <div id="recipe-list" style="text-align:right; max-height:250px; overflow-y:auto; font-size:16px; line-height:2.2; padding: 10px; background: #f9f9f9; border-radius: 8px;"></div>
+        <button class="neo-btn" style="width:100%; margin-top:15px; background:#e0e0e0;" onclick="Game.closeModals()">قفل</button>
+    </div>
+</div>
+
+<div id="sleep-game">
+    <div id="happiness-meter">
+        <div id="happy-text">HAPPINESS <span id="happy-val">0</span></div>
+        <div id="happy-bar-container"><div id="happy-bar-fill"></div></div>
+    </div>
+    <img id="sleep-img" src="" onclick="SleepGame.click()">
+</div>
+
+<div id="washing-game">
+    <h1 style="color:white; font-family:'NeoFont'; text-shadow: 0 0 10px #29B6F6;">WASH THE DISHES!</h1>
+    <div id="washing-plate-container"></div>
+</div>
+
+<div id="kissing-game">
+    <h1 style="color:white; font-family:'NeoFont'; text-shadow: 0 0 10px #FF4081;">KISSING TIME!</h1>
+    <div id="kissing-plate-container">
+        <div style="font-size:80px; z-index: 1;">🐻</div>
+    </div>
+</div>
+
+<div id="world" onclick="Player.move(event)">
+    <div id="zone-living">
+        <div id="bed" class="obj" style="left:10px; top:10px;" onclick="Interact.obj('bed', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🛏️</span><div class="obj-label">توضيب</div>
+        </div>
+        <div id="tv" class="obj" style="right:10px; top:10px;" onclick="Interact.obj('tv', event)"><span class="vis">📺</span><div class="obj-label">تلفزيون</div></div>
+        <div id="sofa" class="obj" style="bottom:50px; left:50%; transform:translateX(-50%);" onclick="Interact.obj('sofa', event)"><span class="vis">🛋️</span></div>
+        <div id="chair" class="obj" style="bottom:120px; left:20px;" onclick="Interact.obj('chair', event)"><span class="vis">🎄</span><div class="obj-label">رغي</div></div>
+        <div id="kissing-bench" class="obj" style="bottom:180px; left:60px;" onclick="Interact.obj('kissing-bench', event)"><span class="vis">🪑🪑</span><div class="obj-label">kissing time</div></div>
+        <div id="shower" class="obj" style="top:100px; left:10px;" onclick="Interact.obj('shower', event)">
+             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🚿</span><div class="obj-label">دش</div>
+        </div>
+    </div>
+    <div id="zone-kitchen">
+        <div id="fridge" class="obj" onclick="Interact.obj('fridge', event)">
+            <div class="fridge-handle" style="top:20%; height:20px;"></div>
+            <div class="fridge-handle" style="top:60%; height:30px;"></div>
+        </div>
+        <div id="stove" class="obj" style="bottom:10px; left:10px;" onclick="Interact.obj('stove', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍳</span>
+        </div>
+        <div id="stove2" class="obj" style="bottom:10px; left:35px;" onclick="Interact.obj('stove2', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍳</span>
+        </div>
+        <div id="oven" class="obj" style="bottom:10px; left:60px;" onclick="Interact.obj('oven', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔥</span>
+        </div>
+        <div id="oven2" class="obj" style="bottom:10px; left:85px;" onclick="Interact.obj('oven2', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔥</span>
+        </div>
+        <div id="prep" class="obj" style="bottom:10px; left:110px;" onclick="Interact.obj('prep', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔪</span>
+        </div>
+        <div id="prep2" class="obj" style="bottom:10px; left:135px;" onclick="Interact.obj('prep2', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔪</span>
+        </div>
+        <div id="fryer" class="obj" style="top:120px; right:10px; display:none;" onclick="Interact.obj('fryer', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍟</span>
+        </div>
+        <div id="fryer2" class="obj" style="top:150px; right:10px; display:none;" onclick="Interact.obj('fryer2', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍟</span>
+        </div>
+        <div id="icecream" class="obj" style="top:180px; right:10px; display:none;" onclick="Interact.obj('icecream', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍦</span>
+        </div>
+        <div id="coffee-machine" class="obj" style="top:240px; right:10px; display:none;" onclick="Interact.obj('coffee-machine', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">☕</span>
+        </div>
+        <div id="sushi-maker" class="obj" style="bottom:10px; left:160px; display:none;" onclick="Interact.obj('sushi-maker', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍘</span>
+        </div>
+        <div id="snacks-area" class="obj" style="top:300px; right:10px; display:none;" onclick="Interact.obj('snacks-area', event)"><span class="vis">🍿</span></div>
+        <div id="cow-station" class="obj" style="top:10px; right:80px; display:none;" onclick="Interact.obj('cow-station', event)">
+             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🐄</span>
+        </div>
+        <div id="sink" class="obj" style="bottom:10px; right:10px;" onclick="Interact.obj('sink', event)">
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🚰</span>
+            <div id="dirty-plates">0</div>
+        </div>
+        <div id="plate-station" class="obj" onclick="Interact.obj('plate-station', event)"><span class="vis">🍽️</span></div>
+    </div>
+
+    <div id="bear-container" onclick="Interact.bear(event)">
+        <div id="speech-bubble">Roar!</div>
+        <div id="orders-container"></div>
+        <div id="the-bear">🧸</div>
+    </div>
+    
+    <div id="heba">
+        <div id="heba-stats">
+            <span style="color:var(--neo-blue)">Lvl <span id="h-lvl">1</span></span>
+            <span style="color:var(--neo-green)">$ <span id="h-cash">0</span></span>
+        </div>
+        <div id="inventory"></div>
+        <span id="player-sprite">🐥</span>
+    </div>
+</div>
+
+<script>
+const TEXT = {
+    flirts: [
+        "تسلم ايدك يا ست البنات", "قمر والله", "ايه الحلاوة دي", "ربنا يخليكي ليا", "نفسي مفتوحة عشانك",
+        "يا وعدي على الجمال", "انتي ملبساكي عفريت شطارة؟", "احلى اكل من احلى ايد", "تسلم مجايبك يا غالية",
+        "يخربيت طعامتك", "كدا كتير على قلبي", "دلعيني كمان وكمان", "ست الكل وبس", "انتي رزق والله",
+        "ايه الطعامة دي كلها", "يا بختي بيكي", "منورة حياتي والمطبخ", "عسل يا خواتي", "قلبي يا ناس",
+        "مفيش منك اتنين", "حلاوتك زايدة النهاردة", "كلي انتي يا قلبي", "مش عايز غيرك", "نعم الزوجة الصالحة",
+        "يا سيدي يا سيدي", "منورة الدنيا كلها", "اكل ملوك ده", "يا جمالو يا جمالو", "ايه العظمة دي",
+        "ملكة قلبي ومعدتي", "يا سعدي بيكي", "وشك خير عليا", "حب حياتي الحلو", "يا فراولة", "يا بونبوناية",
+        "سكر محلي", "ضحكتك بتفتح النفس", "يا بركة البيت", "تاج راسي", "يا مهنية", "يا غالية", "عيوني ليكي",
+        "روحي فيكي", "عمري كله", "يا نور عيني", "حبيبتي الشاطرة", "ما انحرمش منك", "يا ست الستات",
+        "تسلم ايديكي وعنيكي", "يا جميل", "يا عسل ابيض", "قمر 14", "يا مجنناني", "قلبي الصغير لا يتحمل"
+    ],
+    roasts: [
+        "هو الاكل بيتحرق؟", "سنة كمان واكون مت", "فين الاكل يا هانم؟", "انا خللت من القعدة", "يا مسهل الحال يارب",
+        "جعااااان", "يلا يا هانم", "خلصينا", "هوت", "بقالي ساعة مستني", "العيال ماتت من الجوع", "انتي بتطبخي سلحفاة؟",
+        "يارب صبرني", "مش هنخلص النهاردة", "الليل ليل", "طب اطلب دليفري؟", "انجزززي", "بطني بتصوصو", "حرام عليكي",
+        "ايه البطء ده", "شدي حيلك شوية", "عايز اكل مش انام", "يا ساتر", "الضيوف مشيوا", "الاكل برد", "نسيتينا ولا ايه",
+        "انا خللت", "يا فتاح يا عليم", "استغفر الله", "هاتي اي حاجة", "مش لازم تزوقيه", "انا هموت من الجوع",
+        "فين الغدا", "فين العشا", "يادي النيلة", "يلا بقا", "مش قادر استنى", "هقع من طولي", "ارحمينا", "يا منجيني",
+        "مالك يسطا ما تاكليني", "يا معين", "اخيرا بصيتيلي"
+    ],
+    bear_empty: [
+        "وشحتك ولا ايه", "جيتي في ملعبي", "الجميل فاضي النهاردة؟", "عايزة ايه يا شقية", 
+        "نورتي يا قلب الدبدوب", "وحشتيني يا كتكوتة", "ايه النظرة دي 😉", "فاضية وجاية تتدلعي؟", 
+        "بحبك وانتي رايقة", "القلب ليكي لوحدك", "غمزة لعيونك", "يا واخد قلبي"
+    ],
+    items: {
+        '🍎': 'تفاح', '🍞': 'عيش', '🥩': 'لحمة', '🥔': 'بطاطس', '🥬': 'خس', '🥭': 'مانجا',
+        '🍓': 'فراولة', '🍦': 'ايس كريم', '🐮': 'لبن', '☕': 'بن', '🧀': 'جبنة', '🍚': 'رز',
+        '🍿': 'شيبسي', '🍪': 'كوكيز', '🍫': 'شيكولاتة', '🥨': 'باتيه',
+        '🍔': 'برجر', '🥪': 'ساندوتش', '🍟': 'بطاطس محمرة', '🍨': 'ايس كريم', 
+        '🥤': 'عصير', '🥧': 'فطيرة', '🍵': 'قهوة', '🥛': 'كوب لبن', '🍣': 'سوشي',
+        '🚿': 'دش', '📺': 'تلفزيون', '💤': 'نوم', '💬': 'رغي', '🛏️': 'توضيب', '💋': 'kissing time'
+    }
+};
+
+const INGREDIENTS = {
+    '🍎': { u: 1 }, '🍞': { u: 1 }, '🥩': { u: 1 }, '🥬': { u: 1 },
+    '🥔': { u: 2 }, 
+    '🥭': { u: 3 }, '🍦': { u: 3 }, 
+    '🍓': { u: 4 }, '☕': { u: 4 },
+    '🍿': { u: 5 }, '🍪': { u: 5 }, '🍫': { u: 5 }, '🥨': { u: 5 },
+    '🍚': { u: 6 }
+};
+
+const RECIPES = {
+    '🥩': { out: '🍔', s: 'stove', t: 3000 },
+    '🍞': { out: '🥪', s: 'prep', t: 1000 },
+    '🥔': { out: '🍟', s: 'fryer', t: 3000 },
+    '🥭': { out: '🍨', s: 'icecream', t: 4000 },
+    '🍦': { out: '🍨', s: 'icecream', t: 4000 },
+    '🍓': { out: '🥤', s: 'prep', t: 2000 },
+    '🍎': { out: '🥧', s: 'oven', t: 4000 },
+    '☕': { out: '🍵', s: 'coffee-machine', t: 5000 },
+    '🍚': { out: '🍣', s: 'sushi-maker', t: 4500 },
+    'empty_cup': { out: '🥛', s: 'cow-station', t: 4000 }
+};
+
+const SHOP_DATA = [
+    { id: 'stove_upg', name: 'بوتاجاز جديد', price: 500, cat: 'kitchen', type: 'perm', desc: 'شكل جديد' },
+    { id: 'fridge_upg', name: 'تلاجة مودرن', price: 600, cat: 'kitchen', type: 'perm', desc: 'شكل جديد' },
+    { id: 'oven_upg', name: 'فرن كهربا', price: 550, cat: 'kitchen', type: 'perm', desc: 'شكل جديد' },
+    { id: 'prep_upg', name: 'ترابيزة رخام', price: 400, cat: 'kitchen', type: 'perm', desc: 'شكل جديد' },
+    { id: 'sink_upg', name: 'حوض سيراميك', price: 450, cat: 'kitchen', type: 'perm', desc: 'شكل جديد' },
+    { id: 'coffee_upg', name: 'ماكينة اسبرسو', price: 700, cat: 'kitchen', type: 'perm', desc: 'شكل جديد' },
+    { id: 'ice_upg', name: 'ايس كريم', price: 650, cat: 'kitchen', type: 'perm', desc: 'شكل جديد' },
+    { id: 'fryer_upg', name: 'قلاية هوائية', price: 600, cat: 'kitchen', type: 'perm', desc: 'شكل جديد' },
+    { id: 'floor_k', name: 'بلاط مطبخ', price: 300, cat: 'kitchen', type: 'perm', desc: 'تغيير الارضية' },
+    { id: 'wall_k', name: 'دهان مطبخ', price: 300, cat: 'kitchen', type: 'perm', desc: 'تغيير الحيطة' },
+
+    { id: 'sofa_upg', name: 'انتريه جلد', price: 800, cat: 'living', type: 'perm', desc: 'شكل جديد' },
+    { id: 'tv_upg', name: 'شاشة سمارت', price: 1000, cat: 'living', type: 'perm', desc: 'شكل جديد' },
+    { id: 'bed_upg', name: 'سرير ملوكي', price: 900, cat: 'living', type: 'perm', desc: 'شكل جديد' },
+    { id: 'shower_upg', name: 'جاكوزي', price: 1200, cat: 'living', type: 'perm', desc: 'شكل جديد' },
+    { id: 'rug_l', name: 'سجادة فرو', price: 400, cat: 'living', type: 'perm', desc: 'ديكور' },
+    { id: 'lamp_l', name: 'اباجورة', price: 300, cat: 'living', type: 'perm', desc: 'ديكور' },
+    { id: 'plant_l', name: 'زرعة زينة', price: 200, cat: 'living', type: 'perm', desc: 'ديكور' },
+    { id: 'win_l', name: 'ستائر', price: 350, cat: 'living', type: 'perm', desc: 'ديكور' },
+    { id: 'book_l', name: 'مكتبة', price: 500, cat: 'living', type: 'perm', desc: 'ديكور' },
+    { id: 'paint_l', name: 'دهان صالة', price: 400, cat: 'living', type: 'perm', desc: 'تغيير الحيطة' },
+
+    { id: 'speed1', name: 'Speed Boots I 👢', price: 100, cat: 'boosts', type: 'perm', desc: '+20% Speed' },
+    { id: 'cap1', name: 'Big Hands I ✋', price: 150, cat: 'boosts', type: 'perm', desc: 'Carry 4 Items' },
+    { id: 'clean1', name: 'Super Sponge 🧽', price: 200, cat: 'boosts', type: 'perm', desc: 'Clean 2x Faster' },
+    { id: 'auto_clean', name: 'Auto Dishwasher 🤖', price: 800, cat: 'boosts', type: 'perm', desc: 'Auto Clean Plates' },
+    { id: 'rat_trap', name: 'Rat Trap 🪤', price: 400, cat: 'boosts', type: 'perm', desc: 'Auto Kill Rats' },
+    { id: 'drone', name: 'Drone Delivery 🚁', price: 600, cat: 'boosts', type: 'perm', desc: 'Instant Ingredients' },
+    { id: 'freeze', name: 'Time Freeze ❄️', price: 50, cat: 'boosts', type: 'cons', desc: 'Stop timer 15s' },
+    { id: 'donut', name: 'Cold Donut 🍩', price: 75, cat: 'boosts', type: 'cons', desc: 'Instant Cooking' },
+    { id: 'skip', name: 'Level Skip ⏩', price: 2000, cat: 'boosts', type: 'cons', desc: 'Skip Level' },
+    { id: 'calm', name: 'Calming Tea 🍵', price: 40, cat: 'boosts', type: 'cons', desc: '-30 Anger' }
+];
+
+const CHALLENGES = {
+    5: { name: 'Rat Invasion', ratRate: 2 },
+    10: { name: 'Dust Storm', dirtRate: 3 },
+    15: { name: 'Rush Hour', orderSpeed: 1.5 },
+    20: { name: 'Grumpy Day', angerRate: 1.5 },
+    25: { name: 'Broken Stove', machineSlow: 2 },
+    30: { name: 'Inflation', tips: 0.5 },
+    35: { name: 'Chaos Mode', ratRate: 3, dirtRate: 3, angerRate: 2 },
+    40: { name: 'The Ultimate Test', allHard: true }
+};
+
+const CACHE = {};
+function cacheDOM() {
+    ['h-lvl','h-cash','ui-lives','ui-xp-left','anger-fill','xp-fill',
+     'dirty-plates','bear-container','the-bear','speech-bubble','orders-container',
+     'heba','world','game-over-modal','level-complete-modal','menu-title','menu-grid', 'menu-footer',
+     'generic-menu-modal','jump-heba','jump-bear','happy-val','happy-bar-fill', 'start-info', 'washing-game', 'kissing-game', 'sleep-game', 'shop-tabs'].forEach(id => CACHE[id] = document.getElementById(id));
+}
+
+(function initSplashContent() {
+    const bearMsg = document.getElementById('splash-bear-msg');
+    const chickHearts = document.getElementById('splash-chick-hearts');
+    
+    setInterval(() => {
+        const msg = TEXT.flirts[Math.floor(Math.random() * TEXT.flirts.length)];
+        bearMsg.innerText = msg;
+    }, 2500);
+    bearMsg.innerText = TEXT.flirts[0];
+
+    setInterval(() => {
+        const h = document.createElement('div');
+        const hearts = ['❤️', '💖', '💕', '💓', '💗'];
+        h.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+        h.className = 'splash-heart-anim';
+        h.style.left = (Math.random() * 40) + 'px';
+        chickHearts.appendChild(h);
+        setTimeout(() => h.remove(), 1500);
+    }, 500);
+})();
+
+const Game = {
+    active: false, mode: 'normal', level: 1, cash: 100, 
+    dirtyPlates: 0, maxPlates: 5, platesServed: 0,
+    lives: 4, xp: 0, xpTarget: 100,
+    levelTimer: 0, lastTime: 0,
+    modifiers: {}, hackerClicks: 0, activeShopCat: 'kitchen',
+    activeChallenge: null,
+    
+    initSplash() {
+        document.getElementById('splash-screen').style.opacity = '0';
+        this.playSound('click');
+        const aud = document.getElementById('bg-music');
+        aud.volume = 0.3;
+        aud.play().catch(e => console.log('Audio blocked'));
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('start-modal').style.display = 'flex';
+        }, 500);
+    },
+
+    playSound(id) {
+        const el = document.getElementById('sfx-' + id);
+        if(el) {
+            el.currentTime = 0;
+            el.play().catch(e => {});
+        }
+    },
+
+    start() {
+        cacheDOM();
+        this.playSound('click');
+        const savedLvl = localStorage.getItem('heba_level');
+        this.level = savedLvl ? parseInt(savedLvl) : 1;
+        document.getElementById('start-modal').style.display = 'none';
+        this.startLevel(this.level);
+        requestAnimationFrame(t => this.loop(t));
+    },
+
+    startLevel(lvl) {
+        this.level = lvl;
+        this.active = true;
+        this.mode = 'normal';
+        
+        this.lives = 4;
+        this.xp = 0;
+        this.xpTarget = 100 + (lvl * 20);
+        
+        this.platesServed = 0;
+        this.dirtyPlates = 0;
+        
+        this.activeChallenge = CHALLENGES[lvl] || null;
+        if(this.activeChallenge) {
+            CACHE['start-info'].innerText = `Challenge: ${this.activeChallenge.name}`;
+            CACHE['start-modal'].style.display = 'flex';
+            this.active = false;
+        } else {
+            CACHE['start-info'].innerText = "";
+        }
+
+        if(this.modifiers['second']) this.hasRevive = true;
+
+        document.getElementById('player-sprite').innerText = '🐥';
+        document.getElementById('the-bear').innerText = '🧸';
+
+        Bear.reset();
+        World.reset();
+        this.updateHUD();
+        this.checkUnlocks();
+        this.applyVisuals();
+        this.closeModals();
+        Bear.startLogic();
+    },
+
+    nextLevel() {
+        this.playSound('click');
+        localStorage.setItem('heba_level', this.level + 1);
+        this.startLevel(this.level + 1);
+    },
+
+    restartLevel() {
+        this.playSound('click');
+        this.startLevel(this.level);
+    },
+
+    checkUnlocks() {
+        const s = (id, show) => document.getElementById(id).style.display = (show ? 'flex' : 'none');
+        s('fryer', this.level >= 2);
+        s('icecream', this.level >= 3);
+        s('coffee-machine', this.level >= 4);
+        s('cow-station', this.level >= 5);
+        s('snacks-area', this.level >= 5);
+        s('sushi-maker', this.level >= 6);
+        s('stove2', this.level >= 15);
+        s('prep2', this.level >= 20);
+        s('fryer2', this.level >= 25);
+        s('oven2', this.level >= 30);
+    },
+
+    applyVisuals() {
+        const map = {
+            'stove': 'stove_upg', 'fridge': 'fridge_upg', 'oven': 'oven_upg',
+            'prep': 'prep_upg', 'sink': 'sink_upg', 'coffee-machine': 'coffee_upg',
+            'icecream': 'ice_upg', 'fryer': 'fryer_upg', 'sofa': 'sofa_upg',
+            'tv': 'tv_upg', 'bed': 'bed_upg', 'shower': 'shower_upg'
+        };
+        for(let k in map) {
+            const el = document.getElementById(k);
+            const vis = el.querySelector('.vis');
+            if(vis) {
+                if(this.modifiers[map[k]]) {
+                    vis.innerHTML = `<img src="https://placehold.co/50x50/png?text=UPG" class="obj-img">`;
+                }
+            }
+        }
+        if(this.modifiers['floor_k']) document.getElementById('zone-kitchen').style.backgroundImage = 'radial-gradient(#009688 2px, transparent 2px)';
+        if(this.modifiers['wall_k']) document.getElementById('zone-kitchen').style.backgroundColor = '#E0F2F1';
+        if(this.modifiers['paint_l']) document.getElementById('zone-living').style.backgroundColor = '#FCE4EC';
+    },
+
+    updateHUD() {
+        CACHE['h-lvl'].innerText = this.level;
+        CACHE['h-cash'].innerText = Math.floor(this.cash);
+        CACHE['ui-lives'].innerText = "💛".repeat(this.lives);
+        CACHE['ui-xp-left'].innerText = Math.max(0, this.xpTarget - this.xp);
+        CACHE['dirty-plates'].innerText = this.dirtyPlates;
+        CACHE['dirty-plates'].style.display = this.dirtyPlates > 0 ? 'flex' : 'none';
+        
+        const xpPct = Math.min(100, (this.xp / this.xpTarget) * 100);
+        CACHE['xp-fill'].style.width = xpPct + '%';
+    },
+
+    winLevel() {
+        this.active = false;
+        this.playSound('success');
+        
+        var duration = 3000;
+        var end = Date.now() + duration;
+        (function frame() {
+          confetti({
+            particleCount: 5, angle: 60, spread: 55, origin: { x: 0 },
+            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
+          });
+          confetti({
+            particleCount: 5, angle: 120, spread: 55, origin: { x: 1 },
+            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00']
+          });
+          if (Date.now() < end) requestAnimationFrame(frame);
+        }());
+
+        const stats = document.getElementById('level-stats');
+        stats.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin:10px 0; border-bottom:1px solid #ddd;"><span>الفلوس:</span><span>${Math.floor(this.cash)}</span></div>
+            <div style="display:flex; justify-content:space-between; margin:10px 0; border-bottom:1px solid #ddd;"><span>الاطباق:</span><span>${this.platesServed}</span></div>
+            <div style="display:flex; justify-content:space-between; margin:10px 0; border-bottom:1px solid #ddd;"><span>الرضا:</span><span>${100 - Math.floor(Bear.anger)}%</span></div>
+        `;
+        this.modifiers['donut'] = false;
+        this.modifiers['freeze'] = false;
+        CACHE['level-complete-modal'].style.display = 'flex';
+    },
+
+    gameOver() {
+        if(this.hasRevive) {
+            this.hasRevive = false;
+            this.lives += 1;
+            Bear.anger = 0;
+            Bear.say("فرصة تانية ❤️");
+            return;
+        }
+        this.active = false;
+        CACHE['game-over-modal'].style.display = 'flex';
+    },
+
+    toggleShop() {
+        this.playSound('modal');
+        this.renderShop();
+        CACHE['generic-menu-modal'].style.display = 'flex';
+    },
+
+    renderShop() {
+        CACHE['menu-title'].innerText = `المتجر 🛒`;
+        CACHE['shop-tabs'].style.display = 'flex';
+        CACHE['shop-tabs'].innerHTML = `
+            <div class="tab-btn ${this.activeShopCat=='kitchen'?'active':''}" onclick="Game.setShopCat('kitchen')">مطبخ</div>
+            <div class="tab-btn ${this.activeShopCat=='living'?'active':''}" onclick="Game.setShopCat('living')">صالة</div>
+            <div class="tab-btn ${this.activeShopCat=='boosts'?'active':''}" onclick="Game.setShopCat('boosts')">قدرات</div>
+        `;
+        
+        CACHE['menu-grid'].innerHTML = '';
+        const pageItems = SHOP_DATA.filter(i => i.cat === this.activeShopCat);
+        pageItems.forEach(item => {
+            let owned = this.modifiers[item.id];
+            if(item.type === 'cons') owned = false;
+            
+            const div = document.createElement('div');
+            div.className = 'shop-item';
+            div.innerHTML = `
+                <div>${item.name}</div>
+                <div style="font-size:10px; margin:2px 0;">${item.desc}</div>
+                <div style="font-size:12px; color:green">$${item.price}</div>
+                <button class="shop-buy-btn ${owned ? 'shop-owned' : ''}" onclick="Game.buyItem('${item.id}', ${item.price}, '${item.type}')">${owned ? 'OWNED' : 'BUY'}</button>
+            `;
+            CACHE['menu-grid'].appendChild(div);
+        });
+
+        const footer = CACHE['menu-footer'];
+        footer.innerHTML = `
+            <div class="shop-nav">
+                <div class="hacker-btn" onclick="Game.hackerCheck()"></div>
+            </div>
+        `;
+    },
+
+    setShopCat(cat) {
+        this.playSound('click');
+        this.activeShopCat = cat;
+        this.renderShop();
+    },
+
+    buyItem(id, cost, type) {
+        this.playSound('click');
+        if(type === 'perm' && this.modifiers[id]) return;
+        if(this.cash >= cost) {
+            this.cash -= cost;
+            if(type === 'perm') {
+                this.modifiers[id] = true;
+                this.applyVisuals();
+            } else {
+                this.useConsumable(id);
+            }
+            this.updateHUD();
+            this.renderShop();
+        }
+    },
+
+    useConsumable(id) {
+        if(id === 'calm') { Bear.anger = Math.max(0, Bear.anger - 30); Bear.updateStats(); }
+        if(id === 'nuke') { World.rats.forEach(r => r.remove()); World.rats=[]; Bear.say("بوم! 💣"); }
+        if(id === 'freeze') { this.modifiers['freeze'] = true; setTimeout(() => this.modifiers['freeze'] = false, 15000); }
+        if(id === 'donut') { this.modifiers['donut'] = true; Bear.say("سرعة البرق! ⚡"); }
+        if(id === 'skip') { this.winLevel(); }
+    },
+    
+    hackerCheck() {
+        this.hackerClicks++;
+        if(this.hackerClicks === 7) {
+            this.closeModals();
+            this.initHacker();
+            document.getElementById('hacker-modal').style.display = 'flex';
+            this.hackerClicks = 0;
+        }
+    },
+
+    initHacker() {
+        const sel = document.getElementById('hack-lvl-sel');
+        sel.innerHTML = '';
+        for(let i=1; i<=40; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.innerText = "Level " + i;
+            sel.appendChild(opt);
+        }
+        sel.value = this.level;
+    },
+
+    hackerUpdate() {
+        const d = document.getElementById('hacker-stats');
+        if(document.getElementById('hacker-modal').style.display === 'flex') {
+            d.innerHTML = `ANGER: ${Math.floor(Bear.anger)} | ORDERS: ${Bear.orders.length}<br>STRENGTH: ${Math.floor(Bear.strength)} | TIME: ${Math.floor(Bear.nextOrderTimer)}`;
+        }
+    },
+
+    setHackLevel() {
+        const val = document.getElementById('hack-lvl-sel').value;
+        this.closeModals();
+        this.startLevel(parseInt(val));
+    },
+
+    setHackCash() {
+        const val = document.getElementById('hack-cash-in').value;
+        if(val) {
+            this.cash = parseInt(val);
+            this.updateHUD();
+        }
+    },
+    
+    addCash(amt) {
+        this.cash += amt;
+        this.updateHUD();
+    },
+
+    unlockAll() {
+        this.level = 40;
+        this.checkUnlocks();
+        this.updateHUD();
+    },
+
+    openRecipes() {
+        this.playSound('modal');
+        const l = document.getElementById('recipe-list');
+        l.innerHTML = '';
+        for(let r in RECIPES) {
+            if(INGREDIENTS[r] && INGREDIENTS[r].u <= this.level) 
+                l.innerHTML += `<div>${TEXT.items[r] || r} ⬅️ ${TEXT.items[RECIPES[r].out] || RECIPES[r].out}</div>`;
+        }
+        l.innerHTML += `<div>اي حاجة تانية بتتاكل على طول!</div>`;
+        document.getElementById('recipe-modal').style.display = 'flex';
+    },
+
+    closeModals() {
+        this.playSound('modal');
+        document.querySelectorAll('.modal-overlay').forEach(e => e.style.display = 'none');
+        document.getElementById('sleep-game').style.display = 'none';
+        document.getElementById('washing-game').style.display = 'none';
+        document.getElementById('kissing-game').style.display = 'none';
+        Game.mode = 'normal';
+    },
+
+    loop(t) {
+        if(!this.active) {
+            if(document.getElementById('hacker-modal').style.display === 'flex') this.hackerUpdate();
+            return requestAnimationFrame(k => this.loop(k));
+        }
+        const dt = (t - this.lastTime) / 1000;
+        this.lastTime = t;
+
+        if(this.mode === 'normal') {
+            
+            Bear.update(dt);
+            World.update(dt);
+            
+            if(this.modifiers['auto_clean'] && this.dirtyPlates > 0 && Math.random() < 0.01) {
+                this.dirtyPlates--;
+                this.updateHUD();
+            }
+
+            if(this.xp >= this.xpTarget) return this.winLevel();
+            this.updateHUD();
+        } else if(this.mode === 'sleep') {
+            SleepGame.update(dt);
+        }
+        
+        if(document.getElementById('hacker-modal').style.display === 'flex') this.hackerUpdate();
+        requestAnimationFrame(k => this.loop(k));
+    }
+};
+
+const Bear = {
+    x: 50, y: 50, anger: 0, strength: 0, orders: [], nextOrderTimer: 2, ratTarget: null, ratTimer: 0,
+    msgTimer: null,
+    
+    reset() {
+        this.anger = 0; this.strength = 0; this.orders = []; this.nextOrderTimer = 2;
+        this.ratTarget = null; this.ratTimer = 0;
+        CACHE['orders-container'].innerHTML = '';
+        this.updateStats();
+        this.move(50, 20);
+    },
+    
+    startLogic() { this.logicLoop(); },
+    
+    logicLoop() {
+        if(!Game.active || Game.mode !== 'normal') return setTimeout(() => this.logicLoop(), 1000);
+        
+        if(!this.ratTarget && Math.random() < 0.3) {
+            this.move(Math.random()*60 + 20, Math.random()*80 + 10);
+        }
+        
+        setTimeout(() => this.logicLoop(), 4000);
+    },
+
+    move(x, y) {
+        if(x > this.x) CACHE['the-bear'].style.transform = "scaleX(-1)"; else CACHE['the-bear'].style.transform = "scaleX(1)";
+        this.x = x; this.y = y;
+        CACHE['bear-container'].style.left = `calc(${x}% - 40px)`;
+        CACHE['bear-container'].style.top = `calc(${y}% - 40px)`;
+    },
+
+    update(dt) {
+        let strDecay = 5;
+        if(Game.modifiers['str_boost']) strDecay = 4;
+        this.strength = Math.max(0, this.strength - (strDecay * dt));
+        
+        let angryRate = this.orders.length > 0 ? (this.orders.length * 1.5) : -2;
+        if(Game.modifiers['anger_red'] && angryRate > 0) angryRate *= 0.8;
+        if(Game.activeChallenge && Game.activeChallenge.angerRate) angryRate *= Game.activeChallenge.angerRate;
+        if(Game.activeChallenge && Game.activeChallenge.allHard) angryRate *= 1.5;
+
+        this.anger = Math.max(0, Math.min(100, this.anger + (angryRate * dt)));
+        this.updateStats();
+        if(this.anger >= 100) Game.gameOver();
+
+        let orderSpeed = Game.level * 0.1;
+        if(Game.activeChallenge && Game.activeChallenge.orderSpeed) orderSpeed *= 1.5;
+        
+        this.nextOrderTimer -= dt;
+        if(this.nextOrderTimer <= 0) {
+            let maxOrders = 1 + Math.floor(Game.level / 5);
+            if(maxOrders > 6) maxOrders = 6;
+            if(this.orders.length < maxOrders) this.addOrder();
+            this.nextOrderTimer = Math.max(2, 10 - orderSpeed);
+        }
+
+        if(Game.modifiers['rat_trap'] && World.rats.length > 0) {
+            World.rats[0].click();
+        }
+
+        if(this.strength > 20 && World.rats.length > 0) {
+            World.rats.forEach(r => {
+                const boom = document.createElement('div');
+                boom.innerText = '💥';
+                boom.style.position = 'absolute';
+                boom.style.left = r.style.left;
+                boom.style.top = r.style.top;
+                boom.style.fontSize = '40px';
+                boom.style.zIndex = '100';
+                CACHE['world'].appendChild(boom);
+                setTimeout(() => boom.remove(), 1000);
+                r.remove();
+            });
+            const killCount = World.rats.length;
+            World.rats = [];
+            this.strength = Math.max(0, this.strength - (killCount * 10));
+            Game.cash += (killCount * 5);
+            this.say("ابعدوا عن اكلي! 🦁");
+        }
+
+        this.orders.forEach(o => {
+            o.timer += dt;
+            const el = document.getElementById('ord-'+o.id);
+            if(el) {
+                const fill = Math.min(100, (o.timer / o.maxTime) * 100);
+                el.querySelector('.cooldown-circle').style.background = `conic-gradient(#f44336 ${fill}%, #eee ${fill}%)`;
+                if(fill >= 100) {
+                    this.anger += 10;
+                    o.timer = 0;
+                    this.say(TEXT.roasts[Math.floor(Math.random()*TEXT.roasts.length)]);
+                }
+            }
+        });
+    },
+
+    addOrder(reqType) {
+        const id = Date.now() + Math.random();
+        let type = 'food';
+        let item = '🍔';
+        
+        if (reqType === 'specific_food') {
+            type = 'food';
+            const unlocked = Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].u <= Game.level);
+            const raw = unlocked[Math.floor(Math.random()*unlocked.length)];
+            item = RECIPES[raw] ? (Math.random() > 0.3 ? RECIPES[raw].out : raw) : raw;
+        } else if (reqType === 'quality_time') {
+            type = 'quality';
+            const opts = ['🚿','📺','💤','💬','🛏️'];
+            item = opts[Math.floor(Math.random()*opts.length)];
+        } else if (reqType === 'kisses') {
+            type = 'quality';
+            item = '💋';
+        } else {
+            if(Math.random() < 0.3) type = 'quality';
+            
+            if(type === 'food') {
+                const unlocked = Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].u <= Game.level);
+                const raw = unlocked[Math.floor(Math.random()*unlocked.length)];
+                item = RECIPES[raw] ? (Math.random() > 0.3 ? RECIPES[raw].out : raw) : raw;
+            } else {
+                const opts = ['🚿','📺','💤','💬','🛏️', '💋'];
+                item = opts[Math.floor(Math.random()*opts.length)];
+            }
+        }
+
+        const order = { id, item, type, timer: 0, maxTime: Math.max(8, 20 - (Game.level * 0.2)) };
+        this.orders.push(order);
+        
+        const div = document.createElement('div');
+        div.className = 'order-bubble'; div.id = 'ord-'+id;
+        div.innerHTML = `<div class="cooldown-circle"></div><span>${item}</span>`;
+        CACHE['orders-container'].appendChild(div);
+        
+        Game.playSound('pop');
+
+        this.say(type === 'food' ? "هم هم هم 😋" : "عايز اهتمام! ❤️");
+    },
+
+    completeOrder(idx) {
+        Game.playSound('ding');
+        const o = this.orders[idx];
+        const el = document.getElementById('ord-'+o.id);
+        if(el) el.remove();
+        this.orders.splice(idx, 1);
+        this.anger = Math.max(0, this.anger - 15);
+        
+        let cash = 15;
+        if(Game.modifiers['double_cash']) cash *= 1.5;
+        if(Game.activeChallenge && Game.activeChallenge.tips) cash *= Game.activeChallenge.tips;
+        
+        Game.cash += cash;
+        Game.xp += 15;
+        
+        if(o.type === 'food') {
+            Game.platesServed++;
+            Game.dirtyPlates++;
+            this.strength = Math.min(100, this.strength + 10);
+            this.spawnHeart();
+        }
+        this.say(TEXT.flirts[Math.floor(Math.random()*TEXT.flirts.length)]);
+        Game.updateHUD();
+    },
+
+    spawnHeart() {
+        const hearts = ['💖', '💕', '💓', '💗', '❤️', '💝', '💘'];
+        const h = document.createElement('div');
+        h.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+        h.className = 'kisses-effect';
+        h.style.left = this.x + '%';
+        h.style.top = this.y + '%';
+        CACHE['world'].appendChild(h);
+        setTimeout(() => h.remove(), 1500);
+    },
+
+    updateStats() {
+        CACHE['anger-fill'].style.width = this.anger + '%';
+        const angry = this.anger > 60;
+        CACHE['the-bear'].innerText = angry ? '🐻' : '🧸';
+    },
+
+    say(txt) {
+        Game.playSound('bear');
+        const b = CACHE['speech-bubble'];
+        b.innerText = txt; 
+        b.style.opacity = 1;
+        if(this.msgTimer) clearTimeout(this.msgTimer);
+        this.msgTimer = setTimeout(() => { b.style.opacity = 0; }, 3000);
+    },
+    
+    kisses() {
+        const k = document.createElement('div');
+        k.className = 'kisses-effect';
+        k.innerHTML = '💋❤️';
+        k.style.left = this.x + '%'; k.style.top = this.y + '%';
+        CACHE['world'].appendChild(k);
+        setTimeout(()=>k.remove(), 1500);
+        this.anger = Math.max(0, this.anger - 20);
+        this.say("المكان يفتح النفس ✨");
+    }
+};
+
+const Player = {
+    x: 50, y: 50, holding: [],
+    move(e) {
+        if(Game.mode !== 'normal') return;
+        if (e.target.closest('.obj') || e.target.closest('#bear-container') || e.target.closest('.dirt-obj')) return;
+        const rect = CACHE['world'].getBoundingClientRect();
+        this.goto(((e.clientX - rect.left)/rect.width)*100, ((e.clientY - rect.top)/rect.height)*100);
+    },
+    goto(x, y, cb) {
+        const h = CACHE['heba'];
+        if(x > this.x) h.style.transform = "scaleX(-1)"; else h.style.transform = "scaleX(1)";
+        this.x = x; this.y = y;
+        
+        let speed = 0.3;
+        if (Game.modifiers['speed1']) speed = 0.24;
+        if (Game.modifiers['speed2']) speed = 0.18;
+        if (Game.modifiers['speed3']) speed = 0.12;
+        if (Game.modifiers['donut']) speed = 0;
+
+        h.style.transition = `top ${speed}s linear, left ${speed}s linear`;
+        h.style.left = `calc(${x}% - 25px)`; h.style.top = `calc(${y}% - 25px)`;
+        
+        if (speed === 0) {
+            if(cb) cb();
+        } else {
+            if(cb) setTimeout(cb, speed * 1000);
+        }
+    },
+    updateInv() {
+        const i = document.getElementById('inventory');
+        i.innerHTML = this.holding.map(x => `<span class="inv-item">${x}</span>`).join('');
+    }
+};
+
+const Interact = {
+    obj(id, e) {
+        e.stopPropagation();
+        Game.playSound('click');
+        const rect = document.getElementById(id).getBoundingClientRect();
+        const w = CACHE['world'].getBoundingClientRect();
+        Player.goto(((rect.left + rect.width/2 - w.left)/w.width)*100, ((rect.top + rect.height/2 - w.top)/w.height)*100, () => {
+            this.act(id);
+        });
+    },
+    
+    act(id) {
+        const P = Player;
+        const qualityMap = { 'tv': '📺', 'shower': '🚿', 'bed': '💤' };
+        
+        let foundOrder = Bear.orders.find(o => o.item === qualityMap[id]);
+        if(!foundOrder && id === 'bed') {
+             foundOrder = Bear.orders.find(o => o.item === '🛏️');
+        }
+
+        if (foundOrder) {
+            if (id === 'bed') {
+                 Game.mode = 'sleep';
+                 document.getElementById('sleep-game').style.display = 'flex';
+                 SleepGame.start(foundOrder.id);
+            } else {
+                 if(id === 'shower') Game.playSound('water');
+                 if(id === 'tv') Game.playSound('tv');
+                 const el = document.getElementById(id);
+                 const rect = el.getBoundingClientRect();
+                 const w = CACHE['world'].getBoundingClientRect();
+                 Bear.move(((rect.left-w.left)/w.width)*100, ((rect.top-w.top)/w.height)*100);
+                 
+                 this.prog(id, 4000, () => {
+                     const idx = Bear.orders.indexOf(foundOrder);
+                     if(idx > -1) {
+                        Bear.completeOrder(idx);
+                        Bear.reset();
+                     }
+                 });
+            }
+            return;
+        }
+
+        if(id === 'fridge') {
+            Game.playSound('fridge');
+            this.showMenu(Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].u <= Game.level), "التلاجة ❄️");
+        } else if(id === 'snacks-area') {
+            this.showMenu(['🍿','🍪','🍫','🥨'], "تسالي 🥨");
+        } else if(id === 'sink') {
+            WashingGame.start();
+        } else if(id === 'cow-station') {
+            this.prog(id, 3000, () => { this.addToInv('🥛'); });
+        } else {
+            let baseId = id.replace(/[0-9]/g, '');
+            if(RECIPES[P.holding[P.holding.length-1]] && RECIPES[P.holding[P.holding.length-1]].s === baseId) {
+                const ing = P.holding.pop(); P.updateInv();
+                let time = RECIPES[ing].t;
+                if(baseId === 'stove' && Game.modifiers['fast_stove']) time *= 0.5;
+                if(baseId === 'prep' && Game.modifiers['fast_prep']) time *= 0.5;
+                if(baseId === 'oven' && Game.modifiers['fast_oven']) time *= 0.5;
+                if(baseId === 'icecream' && Game.modifiers['fast_ice']) time *= 0.5;
+                if(Game.activeChallenge && Game.activeChallenge.machineSlow) time *= Game.activeChallenge.machineSlow;
+
+                this.prog(id, time, () => { this.addToInv(RECIPES[ing].out); });
+            } else if(baseId === 'coffee-machine') {
+                 Bear.say("لازم بن ☕");
+            }
+        }
+    },
+
+    addToInv(item) {
+        let max = 3;
+        if(Game.modifiers['cap1']) max = 4;
+        if(Game.modifiers['cap2']) max = 5;
+        if(Game.modifiers['cap3']) max = 6;
+        if(Player.holding.length < max) {
+            Player.holding.push(item);
+            Player.updateInv();
+        }
+    },
+
+    showMenu(items, title) {
+        Game.playSound('modal');
+        CACHE['menu-title'].innerText = title;
+        CACHE['shop-tabs'].style.display = 'none';
+        CACHE['menu-grid'].innerHTML = items.map(i => `<button class="menu-btn" onclick="Interact.pick('${i}')">${i}</button>`).join('');
+        CACHE['menu-footer'].innerHTML = '';
+        CACHE['generic-menu-modal'].style.display = 'flex';
+    },
+
+    pick(i) {
+        Game.playSound('pop');
+        this.addToInv(i);
+        Game.closeModals();
+    },
+
+    prog(id, t, cb) {
+        const el = document.getElementById(id);
+        const b = el.querySelector('.prog-bar'), f = el.querySelector('.prog-fill');
+        let time = Game.modifiers['donut'] ? 0 : t;
+        
+        if(!b) return cb();
+        if(time === 0) return cb();
+
+        let baseId = id.replace(/[0-9]/g, '');
+        if (baseId === 'stove' || baseId === 'fryer') Game.playSound('fry');
+        else if (baseId === 'prep') Game.playSound('chop');
+        else if (baseId === 'sink' || baseId === 'cow-station') Game.playSound('water');
+        else Game.playSound('cook');
+
+        b.style.display = 'block'; f.style.width = '0%'; f.style.transition = `width ${time}ms linear`;
+        setTimeout(() => f.style.width = '100%', 10);
+        setTimeout(() => { 
+            b.style.display = 'none'; f.style.width = '0%'; f.style.transition = 'none'; 
+            Game.playSound('success');
+            cb(); 
+        }, time);
+    },
+    
+    clean(dirtEl) {
+        const w = CACHE['world'].getBoundingClientRect();
+        const r = dirtEl.getBoundingClientRect();
+        Player.goto(((r.left-w.left)/w.width)*100, ((r.top-w.top)/w.height)*100, () => {
+             Game.playSound('clean');
+             let t = 1000;
+             if(Game.modifiers['clean1']) t = 500;
+             if(Game.modifiers['donut']) t = 0;
+             
+             if(t > 0) {
+                 setTimeout(() => {
+                    dirtEl.remove();
+                    World.dirt = World.dirt.filter(d => d !== dirtEl);
+                    if(World.dirt.length === 0) Bear.kisses();
+                 }, t);
+             } else {
+                 dirtEl.remove();
+                 World.dirt = World.dirt.filter(d => d !== dirtEl);
+                 if(World.dirt.length === 0) Bear.kisses();
+             }
+        });
+    },
+
+    bear(e) {
+        e.stopPropagation();
+        Game.playSound('click');
+        const r = CACHE['bear-container'].getBoundingClientRect();
+        const w = CACHE['world'].getBoundingClientRect();
+        Player.goto(((r.left-w.left)/w.width)*100, ((r.top-w.top)/w.height)*100, () => {
+            if(Player.holding.length === 0) {
+                const kissIdx = Bear.orders.findIndex(o => o.item === '💋');
+                if (kissIdx > -1) {
+                    KissingGame.start(kissIdx);
+                    return;
+                }
+                
+                CACHE['the-bear'].innerText = '😏';
+                Bear.say(TEXT.bear_empty[Math.floor(Math.random()*TEXT.bear_empty.length)]);
+                return;
+            }
+
+            const orders = [...Bear.orders];
+            let actionDone = false;
+            
+            for(let i=0; i<orders.length; i++) {
+                const o = orders[i];
+                if(o.type !== 'food') {
+                    if(o.item === '💬') {
+                        const el = document.getElementById('chair');
+                        const rect = el.getBoundingClientRect();
+                        Bear.move(((rect.left-w.left)/w.width)*100, ((rect.top-w.top)/w.height)*100);
+                        Interact.prog('chair', 4000, () => {
+                             Bear.completeOrder(i);
+                             Bear.reset();
+                        });
+                        actionDone = true; break;
+                    }
+                }
+            }
+            if(actionDone) return;
+
+            if(Game.dirtyPlates >= Game.maxPlates) return Bear.say("مفيش اطباق نضيفة! 🍽️");
+            
+            let servedCount = 0;
+            const toServe = [];
+
+            for(let i=0; i<orders.length; i++) {
+                const idx = Player.holding.indexOf(orders[i].item);
+                if(idx > -1) {
+                    Player.holding.splice(idx, 1);
+                    toServe.push(i);
+                    break;
+                }
+            }
+
+            if(toServe.length > 0) {
+                Player.updateInv();
+                toServe.forEach(i => Bear.completeOrder(i));
+                return;
+            }
+
+            Bear.say("مش ده المطلوب 🛑");
+            Game.lives--;
+            Game.updateHUD();
+            if(Game.lives <= 0) Game.gameOver();
+        });
+    }
+};
+
+const World = {
+    rats: [], dirt: [],
+    reset() { 
+        document.querySelectorAll('.rat').forEach(r => r.remove()); 
+        document.querySelectorAll('.dirt-obj').forEach(d => d.remove());
+        this.rats = []; this.dirt = [];
+    },
+    removeRat(r) {
+        r.remove();
+        this.rats = this.rats.filter(x => x !== r);
+    },
+    update(dt) {
+        let ratChance = 0.0005 * Game.level;
+        if(Game.activeChallenge && Game.activeChallenge.ratRate) ratChance *= Game.activeChallenge.ratRate;
+        if(Game.activeChallenge && Game.activeChallenge.allHard) ratChance *= 2;
+
+        if(this.rats.length < 3 && Math.random() < ratChance) {
+            const r = document.createElement('div');
+            r.className = 'rat'; r.innerText = '🐀';
+            r.style.left = (Math.random()*90 + 5) + '%';
+            r.style.top = '-50px';
+            r.onclick = (e) => {
+                e.stopPropagation();
+                this.removeRat(r);
+                Bear.say("فار معفن");
+                Game.cash += 5;
+            };
+            document.getElementById('zone-kitchen').appendChild(r);
+            this.rats.push(r);
+            setTimeout(() => { r.style.top = (Math.random()*80 + 10) + '%'; }, 100);
+        }
+        
+        let dirtChance = 0.002 * Game.level;
+        if(Game.activeChallenge && Game.activeChallenge.dirtRate) dirtChance *= Game.activeChallenge.dirtRate;
+        if(Game.activeChallenge && Game.activeChallenge.allHard) dirtChance *= 2;
+
+        if(this.dirt.length < 5 && Math.random() < dirtChance) {
+            const d = document.createElement('div');
+            d.className = 'dirt-obj'; d.innerText = '🌫️';
+            d.style.left = (Math.random()*90 + 5) + '%';
+            d.style.top = (Math.random()*90 + 5) + '%';
+            d.onclick = (e) => { e.stopPropagation(); Interact.clean(d); };
+            document.getElementById('zone-living').appendChild(d);
+            this.dirt.push(d);
+        }
+        
+        this.rats.forEach(r => {
+            const rx = parseFloat(r.style.left), ry = parseFloat(r.style.top);
+            if(ry < 0) return; 
+            const dx = Player.x - rx, dy = Player.y - ry;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            
+            if(dist < 5) {
+                if(Player.holding.length > 0) {
+                    Player.holding.pop(); Player.updateInv();
+                    Bear.say("الفار سرق الاكل! يا عببيطه");
+                    this.removeRat(r);
+                    const theft = document.createElement('div');
+                    theft.innerText = "❌🍔"; theft.className = "kisses-effect";
+                    theft.style.left = Player.x+'%'; theft.style.top = Player.y+'%';
+                    CACHE['world'].appendChild(theft);
+                    setTimeout(()=>theft.remove(), 1000);
+                }
+            } else {
+                const speed = dt * (3 + Game.level);
+                r.style.left = (rx + (dx/dist)*speed) + '%';
+                r.style.top = (ry + (dy/dist)*speed) + '%';
+                r.style.transform = dx > 0 ? "scaleX(-1)" : "scaleX(1)";
+            }
+        });
+    }
+};
+
+const WashingGame = {
+    active: false,
+    
+    start() {
+        Game.playSound('water');
+        this.active = true;
+        document.getElementById('washing-game').style.display = 'flex';
+        this.nextPlate();
+    },
+    
+    nextPlate() {
+        if(Game.dirtyPlates <= 0) {
+            this.finish();
+            return;
+        }
+        this.renderPlate();
+    },
+    
+    renderPlate() {
+        const con = document.getElementById('washing-plate-container');
+        con.innerHTML = '<div style="font-size:120px; position:absolute; z-index:1;">🍽️</div>';
+        for(let i=0; i<5; i++) {
+            const p = document.createElement('div');
+            p.innerText = '💩';
+            p.className = 'wash-poop';
+            p.style.zIndex = '2';
+            p.style.left = (20 + Math.random() * 60) + '%';
+            p.style.top = (20 + Math.random() * 60) + '%';
+            p.onclick = (e) => this.clickPoop(e.target);
+            con.appendChild(p);
+        }
+    },
+    
+    clickPoop(el) {
+        Game.playSound('wash');
+        el.remove();
+        if(document.querySelectorAll('.wash-poop').length === 0) {
+            Game.dirtyPlates--;
+            Game.updateHUD();
+            setTimeout(() => this.nextPlate(), 500);
+        }
+    },
+    
+    finish() {
+        this.active = false;
+        Game.closeModals();
+        Bear.say("نضيف وزي الفل ✨");
+    }
+};
+
+const KissingGame = {
+    active: false,
+    orderIdx: -1,
+    
+    start(idx) {
+        Game.playSound('modal');
+        this.active = true;
+        this.orderIdx = idx;
+        document.getElementById('kissing-game').style.display = 'flex';
+        this.renderGame();
+    },
+    
+    renderGame() {
+        const con = document.getElementById('kissing-plate-container');
+        con.innerHTML = '<div style="font-size:100px;">🐻</div>';
+        for(let i=0; i<5; i++) {
+            const p = document.createElement('div');
+            p.innerText = '👈';
+            p.className = 'kiss-point';
+            p.style.left = (Math.random() * 60 + 20) + '%';
+            p.style.top = (Math.random() * 60 + 20) + '%';
+            p.onclick = (e) => this.clickPoint(e.target);
+            con.appendChild(p);
+        }
+    },
+    
+    clickPoint(el) {
+        Game.playSound('kiss');
+        el.innerText = '💋';
+        el.style.animation = 'floatUp 0.5s forwards';
+        setTimeout(() => {
+            el.remove();
+            if(document.querySelectorAll('.kiss-point').length === 0) {
+                this.finish();
+            }
+        }, 500);
+    },
+    
+    finish() {
+        this.active = false;
+        Game.closeModals();
+        if(this.orderIdx > -1) {
+            Bear.completeOrder(this.orderIdx);
+            this.orderIdx = -1;
+        }
+        Bear.anger = 0;
+        Bear.updateStats();
+        Bear.say("احلى بوسة 😘");
+    }
+};
+
+const SleepGame = {
+    happiness: 0,
+    orderId: -1,
+    
+    start(oid) {
+        Game.playSound('modal');
+        this.happiness = 0;
+        this.orderId = oid;
+        const img = document.getElementById('sleep-img');
+        img.src = "https://placehold.co/300x300/000000/FFF?text=Sleeping";
+        document.getElementById('happy-bar-fill').style.width = '0%';
+        document.getElementById('happy-val').innerText = '0';
+    },
+    
+    click() {
+        Game.playSound('pop');
+        const img = document.getElementById('sleep-img');
+        img.classList.remove('shake');
+        void img.offsetWidth;
+        img.classList.add('shake');
+        
+        if(this.happiness >= 100) return;
+        this.happiness += 5;
+        if(this.happiness > 100) this.happiness = 100;
+        
+        document.getElementById('happy-bar-fill').style.width = this.happiness + '%';
+        document.getElementById('happy-val').innerText = Math.floor(this.happiness);
+        
+        if(this.happiness >= 100) {
+            document.getElementById('sleep-img').src = "https://placehold.co/300x300/FFD700/000?text=Good+Morning";
+            setTimeout(() => this.finish(), 1000);
+        }
+    },
+
+    update(dt) {
+        if(this.happiness > 0 && this.happiness < 100) {
+            this.happiness -= 10 * dt;
+            if(this.happiness < 0) this.happiness = 0;
+            document.getElementById('happy-bar-fill').style.width = this.happiness + '%';
+            document.getElementById('happy-val').innerText = Math.floor(this.happiness);
+        }
+    },
+    
+    finish() {
+        Game.closeModals();
+        const idx = Bear.orders.findIndex(x => x.id === this.orderId);
+        if(idx > -1) {
+            Bear.completeOrder(idx);
+        }
+        this.orderId = -1;
+        Bear.anger = 0;
+        Bear.say("اوففف كنتي تحفه");
+    }
+};
+</script>
+</body>
+</html>
