@@ -78,6 +78,22 @@ body {
 }
 @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
+.frost-theme .modal-box {
+    background: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%);
+    border: 4px solid #00ACC1;
+    box-shadow: 0 0 15px #26C6DA, inset 0 0 20px rgba(255,255,255,0.8);
+    position: relative;
+    overflow: hidden;
+}
+.frost-theme .modal-box::before {
+    content: '❄️'; position: absolute; top: 5px; left: 5px; font-size: 24px; opacity: 0.6; pointer-events: none;
+}
+.frost-theme .modal-box::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, transparent 20%, rgba(255,255,255,0.4) 21%, transparent 22%) 0 0 / 20px 20px;
+    opacity: 0.5; pointer-events: none;
+}
+
 #splash-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
@@ -232,9 +248,9 @@ body {
 .obj-img { width: 50px; height: 50px; object-fit: contain; pointer-events: none; }
 
 #fridge { 
-    left: 5px; top: 10px; width: 60px; height: 90px; 
+    left: 2%; top: 5%; width: 60px; height: 90px; 
     background: linear-gradient(135deg, #ffffff 0%, #cfd8dc 100%);
-    border: 3px solid #455A64; border-radius: 8px; position: relative;
+    border: 3px solid #455A64; border-radius: 8px; position: absolute;
     box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
 }
 #fridge::before {
@@ -245,8 +261,27 @@ body {
     border: 1px solid #455A64; border-radius: 3px; box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
 }
 
-#stove, #oven, #prep, #fryer, #icecream, #coffee-machine, #snacks-area, #cow-station, #sink, #plate-station, #sushi-maker { font-size: 32px; }
-#stove2, #prep2, #fryer2, #oven2 { font-size: 32px; display: none; }
+#stove { bottom: 8%; left: 2%; }
+#stove2 { bottom: 8%; left: 18%; }
+#oven { bottom: 8%; left: 34%; }
+#oven2 { bottom: 8%; left: 50%; }
+#prep { bottom: 25%; left: 2%; }
+#prep2 { bottom: 25%; left: 18%; }
+#sushi-maker { bottom: 25%; left: 34%; }
+#sink { bottom: 8%; right: 2%; }
+#plate-station { bottom: 25%; right: 2%; }
+
+#fryer { top: 20%; right: 2%; }
+#fryer2 { top: 35%; right: 2%; }
+#icecream { top: 50%; right: 2%; }
+#coffee-machine { top: 65%; right: 2%; }
+#snacks-area { top: 80%; right: 2%; }
+#cow-station { top: 5%; right: 15%; }
+
+#stove, #oven, #prep, #fryer, #icecream, #coffee-machine, #snacks-area, #cow-station, #sink, #plate-station, #sushi-maker, #stove2, #prep2, #fryer2, #oven2 { 
+    font-size: 32px; position: absolute;
+}
+
 #shower, #bed, #tv, #sofa, #chair, #kissing-bench { font-size: 40px; }
 #dirty-plates { 
     position: absolute; top: -15px; right: -10px; 
@@ -268,8 +303,8 @@ body {
     font-size: 12px; font-weight: bold; white-space: nowrap; display: flex; gap: 8px;
     box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
 }
-#inventory { position: absolute; top: -65px; display: flex; gap: -5px; }
-.inv-item { 
+#inventory-display { position: absolute; top: -65px; display: flex; gap: -5px; }
+.inv-item-bubble { 
     font-size: 20px; background: var(--neo-white); padding: 5px; 
     border: 2px solid var(--neo-black); border-radius: 50%; 
     box-shadow: 2px 2px 0px rgba(0,0,0,0.2); z-index: 1;
@@ -321,7 +356,7 @@ body {
     text-shadow: 0 0 10px rgba(255,255,255,0.8);
 }
 
-#sleep-game, #kissing-game, #washing-game {
+#sleep-game, #kissing-game, #washing-game, #gift-modal, #drama-game {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.92); z-index: 4000; display: none; overflow: hidden;
     touch-action: none; flex-direction: column; align-items: center; justify-content: center;
@@ -370,7 +405,7 @@ body {
 .menu-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--neo-black); }
 
 .hacker-btn { background: #ff0000; width: 20px; height: 20px; border-radius: 50%; border: 2px solid black; cursor: pointer; }
-.shop-item { display: flex; flex-direction: column; align-items: center; border: 2px solid black; padding: 8px; border-radius: 12px; background: white; box-shadow: 3px 3px 0px rgba(0,0,0,0.1); }
+.shop-item { display: flex; flex-direction: column; align-items: center; border: 2px solid black; padding: 8px; border-radius: 12px; background: white; box-shadow: 3px 3px 0px rgba(0,0,0,0.1); position: relative; }
 .shop-buy-btn { 
     background: var(--neo-green); color: white; border: none; padding: 6px; width: 100%; 
     cursor: pointer; margin-top: 5px; font-weight: bold; border-radius: 6px; 
@@ -380,6 +415,139 @@ body {
 .shop-nav { display: flex; justify-content: center; margin-top: 15px; gap: 10px; }
 .tab-btn { background: #eee; border: 2px solid black; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 .tab-btn.active { background: var(--neo-yellow); transform: translateY(-2px); box-shadow: 2px 2px 0 black; }
+.shop-indicator { position: absolute; top: -5px; right: -5px; background: var(--neo-blue); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid black; }
+
+#gift-box-anim {
+    font-size: 100px; cursor: pointer; animation: bounce 2s infinite;
+    filter: drop-shadow(0 0 20px gold);
+    transition: transform 0.1s;
+    user-select: none;
+}
+#gift-box-anim:active { transform: scale(0.9); }
+.gift-text { color: white; font-family: 'NeoFont'; font-size: 24px; margin-top: 20px; text-align: center; }
+
+@keyframes bounce-gift { 0% { transform: scale(1); } 50% { transform: scale(0.9); } 100% { transform: scale(1); } }
+.gift-bounce { animation: bounce-gift 0.2s linear; }
+.gift-float-text { 
+    position: absolute; font-family: 'NeoFont'; font-size: 28px; 
+    pointer-events: none; animation: floatUp 1s forwards; 
+    text-shadow: 2px 2px 0 #000; font-weight: bold;
+}
+#gift-cont-btn { 
+    display: none; margin-top: 20px; background: var(--neo-green); 
+    color: white; width: 200px; font-size: 22px;
+    animation: popIn 0.3s;
+}
+
+/* Drama & Sleep Mode Extras */
+.tongue-anim {
+    position: absolute; font-size: 60px; pointer-events: none;
+    animation: fadeOutTongue 0.5s forwards; z-index: 100;
+}
+@keyframes fadeOutTongue { 0% { transform: scale(0.5) rotate(-10deg); opacity: 1; } 100% { transform: scale(1.2) rotate(10deg); opacity: 0; } }
+
+.rain-drop {
+    position: absolute; font-size: 30px; top: -50px;
+    animation: rainFall 2s linear forwards; z-index: 3005;
+}
+@keyframes rainFall { to { transform: translateY(110vh); opacity: 0; } }
+
+/* TELEGRAM STYLE DRAMA CHAT */
+#drama-game {
+    background: #0e1621;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.drama-chat-box {
+    width: 95%;
+    max-width: 500px;
+    background-image: linear-gradient(#0e1621 1px, transparent 1px), linear-gradient(90deg, #0e1621 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: #17212b;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 1px solid #2b5278;
+}
+
+.drama-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    width: 100%;
+}
+
+.drama-row.left {
+    justify-content: flex-start;
+}
+
+.drama-row.right {
+    justify-content: flex-end;
+}
+
+.drama-avatar {
+    font-size: 35px;
+    min-width: 40px;
+    text-align: center;
+    filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+}
+
+.drama-msg-bubble {
+    padding: 10px 15px;
+    border-radius: 16px;
+    font-size: 18px;
+    font-family: 'Tahoma', sans-serif;
+    position: relative;
+    max-width: 75%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.drama-row.left .drama-msg-bubble {
+    background-color: #182533;
+    color: #ffffff;
+    border-bottom-left-radius: 4px;
+}
+
+.drama-row.right .drama-choices-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.drama-choice-btn {
+    background-color: #2b5278;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 16px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+    font-weight: bold;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+    border-bottom-right-radius: 4px;
+}
+
+.drama-choice-btn:active {
+    background-color: #4682b4;
+    transform: scale(0.98);
+}
+
+.drama-header {
+    color: white;
+    font-family: 'NeoFont';
+    text-shadow: 0 0 10px #FF4081;
+    margin-bottom: 20px;
+}
 </style>
 </head>
 <body>
@@ -394,14 +562,15 @@ body {
 <audio id="sfx-bear" src="https://assets.mixkit.co/active_storage/sfx/252/252-preview.mp3"></audio>
 <audio id="sfx-modal" src="https://assets.mixkit.co/active_storage/sfx/2044/2044-preview.mp3"></audio>
 <audio id="sfx-step" src="https://assets.mixkit.co/active_storage/sfx/2044/2044-preview.mp3"></audio>
-
 <audio id="sfx-ding" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
 <audio id="sfx-fridge" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 <audio id="sfx-fry" src="https://assets.mixkit.co/active_storage/sfx/181/181-preview.mp3"></audio>
 <audio id="sfx-chop" src="https://assets.mixkit.co/active_storage/sfx/252/252-preview.mp3"></audio>
 <audio id="sfx-water" src="https://assets.mixkit.co/active_storage/sfx/170/170-preview.mp3"></audio>
 <audio id="sfx-tv" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
-<audio id="sfx-clean" src="https://assets.mixkit.co/active_storage/sfx/2044/2044-preview.mp3"></audio>
+<audio id="sfx-clean" src="https://assets.mixkit.co/active_storage/sfx/377/377-preview.mp3"></audio>
+<audio id="sfx-shoot" src="https://assets.mixkit.co/active_storage/sfx/1666/1666-preview.mp3"></audio>
+<audio id="sfx-ice" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
 
 <div id="splash-screen" onclick="Game.initSplash()">
     <div class="stars"></div>
@@ -433,17 +602,14 @@ body {
         <div class="snowflake" style="left: 20%; animation-duration: 7s; animation-delay: 1s;">❅</div>
         <div class="snowflake" style="left: 30%; animation-duration: 4s; animation-delay: 2s;">❄</div>
         <div class="snowflake" style="left: 45%; animation-duration: 6s; animation-delay: 0.5s;">❆</div>
-        <div class="snowflake" style="left: 60%; animation-duration: 5s; animation-delay: 1.5s;">❄</div>
-        <div class="snowflake" style="left: 75%; animation-duration: 8s; animation-delay: 2.5s;">❅</div>
-        <div class="snowflake" style="left: 85%; animation-duration: 4.5s; animation-delay: 0.2s;">❄</div>
-        <div class="snowflake" style="left: 95%; animation-duration: 6.5s; animation-delay: 1.2s;">❆</div>
     </div>
 </div>
 
 <div id="hud">
-    <div class="hud-grp" style="width: 100px;">
+    <div class="hud-grp" style="width: 150px;">
         <button class="neo-btn" onclick="Game.toggleShop()">🛒</button>
         <button class="neo-btn" onclick="Game.openRecipes()">📖</button>
+        <button class="neo-btn" onclick="Game.openInventory()">🎒</button>
     </div>
     
     <div class="hud-grp" style="flex: 1; justify-content: center; background: linear-gradient(to bottom, #ffffff, #f5f5f5); border: 2px solid black; border-radius: 8px; padding: 0 10px; height: 50px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
@@ -473,7 +639,7 @@ body {
     <div class="modal-box">
         <h1 style="color:var(--neo-green); text-shadow: 2px 2px 0px rgba(0,0,0,0.1);">🎉 مبروك يا شطورة</h1>
         <div id="level-stats"></div>
-        <button class="neo-btn" style="width:100%; margin-top:20px; background:var(--neo-blue); color:white;" onclick="Game.nextLevel()">المستوى اللي بعده</button>
+        <button class="neo-btn" style="width:100%; margin-top:20px; background:var(--neo-blue); color:white;" onclick="GiftSystem.open()">افتحي الهدية 🎁</button>
     </div>
 </div>
 
@@ -500,10 +666,18 @@ body {
         <div id="hacker-stats" style="background:#000; color:#0f0; padding:10px; font-family:monospace; font-size:12px; text-align:left; margin-bottom:15px; border-radius:8px;"></div>
         
         <div style="margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:10px;">
-            <div style="font-weight:bold; margin-bottom:5px;">Level Selector</div>
-            <div style="display:flex; gap:5px;">
+            <div style="font-weight:bold; margin-bottom:5px;">Level & Stats</div>
+            <div style="display:flex; gap:5px; margin-bottom: 5px;">
                 <select id="hack-lvl-sel" class="neo-btn" style="flex:1; background:white; font-size:14px;"></select>
                 <button class="neo-btn" onclick="Game.setHackLevel()" style="background:var(--neo-blue); color:white;">Go</button>
+            </div>
+            <div style="display:flex; gap:5px; margin-bottom: 5px;">
+                <input id="hack-xp-in" type="number" class="neo-btn" style="flex:1; background:white;" placeholder="XP">
+                <button class="neo-btn" onclick="Game.setHackXP()" style="background:var(--neo-purple); color:white;">Set XP</button>
+            </div>
+             <div style="display:flex; gap:5px;">
+                <input id="hack-anger-in" type="number" class="neo-btn" style="flex:1; background:white;" placeholder="Anger 0-100">
+                <button class="neo-btn" onclick="Game.setHackAnger()" style="background:var(--neo-pink); color:white;">Set Anger</button>
             </div>
         </div>
 
@@ -514,6 +688,12 @@ body {
                 <button class="neo-btn" onclick="Game.setHackCash()" style="background:var(--neo-green);">Set</button>
             </div>
         </div>
+        
+        <div style="margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:10px;">
+             <div style="font-weight:bold; margin-bottom:5px;">Execute Code</div>
+             <textarea id="hack-eval" style="width:100%; height:60px; border:2px solid black; border-radius:8px;"></textarea>
+             <button class="neo-btn" onclick="Game.runHackCode()" style="width:100%; margin-top:5px; background: black; color: white;">RUN</button>
+        </div>
 
         <div class="grid-menu" style="grid-template-columns: 1fr 1fr;">
             <button class="menu-btn" onclick="Bear.addOrder('specific_food')">+ Food Demand</button>
@@ -523,6 +703,8 @@ body {
             <button class="menu-btn" onclick="Game.gameOver()">Fail Level</button>
             <button class="menu-btn" onclick="Bear.anger=0; Bear.updateStats()">Calm Bear</button>
             <button class="menu-btn" onclick="Game.unlockAll()">Unlock All</button>
+            <button class="menu-btn" onclick="Game.saveSettings()">Save Settings 💾</button>
+            <button class="menu-btn" onclick="Game.hardReset()" style="background:red; color:white;">Reset Game 🗑️</button>
         </div>
         <button class="neo-btn" onclick="Game.closeModals()">Close</button>
     </div>
@@ -536,12 +718,26 @@ body {
     </div>
 </div>
 
+<div id="inventory-modal" class="modal-overlay" onclick="if(event.target===this) Game.closeModals()">
+    <div class="modal-box">
+        <h2>شنطتي 🎒</h2>
+        <div id="inv-grid" class="grid-menu"></div>
+        <button class="neo-btn" style="width:100%; margin-top:15px; background:#e0e0e0;" onclick="Game.closeModals()">قفل</button>
+    </div>
+</div>
+
+<div id="gift-modal">
+    <div id="gift-box-anim" onclick="GiftSystem.click()">🎁</div>
+    <div class="gift-text" id="gift-msg">اضغطي بسرعة عشان تفتحي!</div>
+    <button id="gift-cont-btn" class="neo-btn" onclick="Game.nextLevel()">Level Up & Continue ⏩</button>
+</div>
+
 <div id="sleep-game">
     <div id="happiness-meter">
         <div id="happy-text">HAPPINESS <span id="happy-val">0</span></div>
         <div id="happy-bar-container"><div id="happy-bar-fill"></div></div>
     </div>
-    <img id="sleep-img" src="" onclick="SleepGame.click()">
+    <img id="sleep-img" src="" onclick="SleepGame.click(event)">
 </div>
 
 <div id="washing-game">
@@ -556,16 +752,21 @@ body {
     </div>
 </div>
 
+<div id="drama-game">
+    <h1 class="drama-header">DRAMA TIME! 🎭</h1>
+    <div id="drama-chat-view" class="drama-chat-box"></div>
+</div>
+
 <div id="world" onclick="Player.move(event)">
     <div id="zone-living">
-        <div id="bed" class="obj" style="left:10px; top:10px;" onclick="Interact.obj('bed', event)">
+        <div id="bed" class="obj" style="left:2%; top:5%;" onclick="Interact.obj('bed', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🛏️</span><div class="obj-label">توضيب</div>
         </div>
-        <div id="tv" class="obj" style="right:10px; top:10px;" onclick="Interact.obj('tv', event)"><span class="vis">📺</span><div class="obj-label">تلفزيون</div></div>
-        <div id="sofa" class="obj" style="bottom:50px; left:50%; transform:translateX(-50%);" onclick="Interact.obj('sofa', event)"><span class="vis">🛋️</span></div>
-        <div id="chair" class="obj" style="bottom:120px; left:20px;" onclick="Interact.obj('chair', event)"><span class="vis">🎄</span><div class="obj-label">رغي</div></div>
-        <div id="kissing-bench" class="obj" style="bottom:180px; left:60px;" onclick="Interact.obj('kissing-bench', event)"><span class="vis">🪑🪑</span><div class="obj-label">kissing time</div></div>
-        <div id="shower" class="obj" style="top:100px; left:10px;" onclick="Interact.obj('shower', event)">
+        <div id="tv" class="obj" style="right:2%; top:5%;" onclick="Interact.obj('tv', event)"><span class="vis">📺</span><div class="obj-label">تلفزيون</div></div>
+        <div id="sofa" class="obj" style="bottom:15%; left:50%; transform:translateX(-50%);" onclick="Interact.obj('sofa', event)"><span class="vis">🛋️</span></div>
+        <div id="chair" class="obj" style="bottom:35%; left:5%;" onclick="Interact.obj('chair', event)"><span class="vis">🎄</span><div class="obj-label">رغي</div></div>
+        <div id="kissing-bench" class="obj" style="bottom:50%; left:15%;" onclick="Interact.obj('kissing-bench', event)"><span class="vis">🪑🪑</span><div class="obj-label">kissing time</div></div>
+        <div id="shower" class="obj" style="top:25%; left:2%;" onclick="Interact.obj('shower', event)">
              <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🚿</span><div class="obj-label">دش</div>
         </div>
     </div>
@@ -574,44 +775,44 @@ body {
             <div class="fridge-handle" style="top:20%; height:20px;"></div>
             <div class="fridge-handle" style="top:60%; height:30px;"></div>
         </div>
-        <div id="stove" class="obj" style="bottom:10px; left:10px;" onclick="Interact.obj('stove', event)">
+        <div id="stove" class="obj" onclick="Interact.obj('stove', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍳</span>
         </div>
-        <div id="stove2" class="obj" style="bottom:10px; left:35px;" onclick="Interact.obj('stove2', event)">
+        <div id="stove2" class="obj" onclick="Interact.obj('stove2', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍳</span>
         </div>
-        <div id="oven" class="obj" style="bottom:10px; left:60px;" onclick="Interact.obj('oven', event)">
+        <div id="oven" class="obj" onclick="Interact.obj('oven', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔥</span>
         </div>
-        <div id="oven2" class="obj" style="bottom:10px; left:85px;" onclick="Interact.obj('oven2', event)">
+        <div id="oven2" class="obj" onclick="Interact.obj('oven2', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔥</span>
         </div>
-        <div id="prep" class="obj" style="bottom:10px; left:110px;" onclick="Interact.obj('prep', event)">
+        <div id="prep" class="obj" onclick="Interact.obj('prep', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔪</span>
         </div>
-        <div id="prep2" class="obj" style="bottom:10px; left:135px;" onclick="Interact.obj('prep2', event)">
+        <div id="prep2" class="obj" onclick="Interact.obj('prep2', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔪</span>
         </div>
-        <div id="fryer" class="obj" style="top:120px; right:10px; display:none;" onclick="Interact.obj('fryer', event)">
+        <div id="fryer" class="obj" style="display:none;" onclick="Interact.obj('fryer', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍟</span>
         </div>
-        <div id="fryer2" class="obj" style="top:150px; right:10px; display:none;" onclick="Interact.obj('fryer2', event)">
+        <div id="fryer2" class="obj" style="display:none;" onclick="Interact.obj('fryer2', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍟</span>
         </div>
-        <div id="icecream" class="obj" style="top:180px; right:10px; display:none;" onclick="Interact.obj('icecream', event)">
+        <div id="icecream" class="obj" style="display:none;" onclick="Interact.obj('icecream', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍦</span>
         </div>
-        <div id="coffee-machine" class="obj" style="top:240px; right:10px; display:none;" onclick="Interact.obj('coffee-machine', event)">
+        <div id="coffee-machine" class="obj" style="display:none;" onclick="Interact.obj('coffee-machine', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">☕</span>
         </div>
-        <div id="sushi-maker" class="obj" style="bottom:10px; left:160px; display:none;" onclick="Interact.obj('sushi-maker', event)">
+        <div id="sushi-maker" class="obj" style="display:none;" onclick="Interact.obj('sushi-maker', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍘</span>
         </div>
-        <div id="snacks-area" class="obj" style="top:300px; right:10px; display:none;" onclick="Interact.obj('snacks-area', event)"><span class="vis">🍿</span></div>
-        <div id="cow-station" class="obj" style="top:10px; right:80px; display:none;" onclick="Interact.obj('cow-station', event)">
+        <div id="snacks-area" class="obj" style="display:none;" onclick="Interact.obj('snacks-area', event)"><span class="vis">🍿</span></div>
+        <div id="cow-station" class="obj" style="display:none;" onclick="Interact.obj('cow-station', event)">
              <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🐄</span>
         </div>
-        <div id="sink" class="obj" style="bottom:10px; right:10px;" onclick="Interact.obj('sink', event)">
+        <div id="sink" class="obj" onclick="Interact.obj('sink', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🚰</span>
             <div id="dirty-plates">0</div>
         </div>
@@ -629,7 +830,7 @@ body {
             <span style="color:var(--neo-blue)">Lvl <span id="h-lvl">1</span></span>
             <span style="color:var(--neo-green)">$ <span id="h-cash">0</span></span>
         </div>
-        <div id="inventory"></div>
+        <div id="inventory-display"></div>
         <span id="player-sprite">🐥</span>
     </div>
 </div>
@@ -668,9 +869,47 @@ const TEXT = {
         '🍿': 'شيبسي', '🍪': 'كوكيز', '🍫': 'شيكولاتة', '🥨': 'باتيه',
         '🍔': 'برجر', '🥪': 'ساندوتش', '🍟': 'بطاطس محمرة', '🍨': 'ايس كريم', 
         '🥤': 'عصير', '🥧': 'فطيرة', '🍵': 'قهوة', '🥛': 'كوب لبن', '🍣': 'سوشي',
-        '🚿': 'دش', '📺': 'تلفزيون', '💤': 'نوم', '💬': 'رغي', '🛏️': 'توضيب', '💋': 'kissing time'
+        '🚿': 'دش', '📺': 'تلفزيون', '💤': 'نوم', '💬': 'رغي', '🛏️': 'توضيب', '💋': 'kissing time',
+        'calm': 'شاي مهدئ', 'freeze': 'تجميد الوقت', 'donut': 'دونت سريعة', 'skip': 'سكيب للمستوى', 
+        'auto_clean': 'غسالة اطباق', 'rat_trap': 'مصيدة فيران', '🎭': 'drama time'
     }
 };
+
+const DRAMA_DATA = {
+    cold_answers: [
+        "*rolls_eyes*", "*being_distant*", "*annoyed*", "*passive_aggressive*",
+        "*sighs_loudly*", "*stares_blankly*", "k.", "fine.", "*whatever*",
+        "*files_nails*", "*checks_phone*", "*fake_smile*", "*judging_you*",
+        "*dead_pan*", "*yawns*", "*scoffs*", "*ignores*", "*raises_eyebrow*",
+        "*sips_tea*", "*typing...*", "*seen*", "*unimpressed*", "*side_eye*",
+        "*blocked*", "*silence*", "*crickets*", "*no_reaction*", "*blinks_slowly*",
+        "*leaves_chat*", "*facepalm*", "*cold_stare*", "*checking_watch*"
+    ],
+    bear_states: [
+        "*joking*", "*being_sarcastic*", "*teasing*", "*flirting*",
+        "*mansplaining*", "*complaining*", "*whining*", "*asking_stupid_question*",
+        "*being_clingy*", "*hungry*", "*bored*", "*overreacting*",
+        "*being_dramatic*", "*pouting*", "*acting_cool*", "*forgetting_something*"
+    ],
+    normal_answers: [
+        "Aww really?", "That's nice", "I love you", "Tell me more",
+        "You're funny", "So sweet", "Of course dear", "Interesting",
+        "Go on", "Wow", "Okay honey", "Sure thing"
+    ]
+};
+
+const GIFTS = {
+    1: 'https://www.google.com/search?q=cute+cat',
+    2: 'https://www.google.com/search?q=funny+memes',
+    3: 'https://www.google.com/search?q=flowers',
+    4: 'https://www.google.com/search?q=chocolates'
+};
+
+const FALSE_GIFTS = [
+    "تعيش وتآكل غيرها", "حظ سعيد المرة القادمة", "حاول مرة أخرى", "الهدية في جيبك", "مفيش هدايا النهاردة", 
+    "بتحلم باين", "انسى", "يا خسارة", "خيرها في غيرها", "مش مكتوبالك", "المرة الجاية ان شاء الله", "انت صدقت؟", 
+    "ضحكت عليك", "اجري العب بعيد", "وفر فلوسك", "الهدية خلصت", "مفيش ميزانية", "الدب اكل الهدية", "حظ اوفر", "متزعلش", "جرب تاني"
+];
 
 const INGREDIENTS = {
     '🍎': { u: 1 }, '🍞': { u: 1 }, '🥩': { u: 1 }, '🥬': { u: 1 },
@@ -745,7 +984,9 @@ function cacheDOM() {
     ['h-lvl','h-cash','ui-lives','ui-xp-left','anger-fill','xp-fill',
      'dirty-plates','bear-container','the-bear','speech-bubble','orders-container',
      'heba','world','game-over-modal','level-complete-modal','menu-title','menu-grid', 'menu-footer',
-     'generic-menu-modal','jump-heba','jump-bear','happy-val','happy-bar-fill', 'start-info', 'washing-game', 'kissing-game', 'sleep-game', 'shop-tabs'].forEach(id => CACHE[id] = document.getElementById(id));
+     'generic-menu-modal','jump-heba','jump-bear','happy-val','happy-bar-fill', 'start-info', 'washing-game', 
+     'kissing-game', 'sleep-game', 'shop-tabs', 'inventory-display', 'gift-modal', 'inventory-modal', 'inv-grid',
+     'drama-game', 'drama-chat-view'].forEach(id => CACHE[id] = document.getElementById(id));
 }
 
 (function initSplashContent() {
@@ -775,7 +1016,8 @@ const Game = {
     lives: 4, xp: 0, xpTarget: 100,
     levelTimer: 0, lastTime: 0,
     modifiers: {}, hackerClicks: 0, activeShopCat: 'kitchen',
-    activeChallenge: null,
+    activeChallenge: null, inventory: [],
+    isProcessingLevel: false,
     
     initSplash() {
         document.getElementById('splash-screen').style.opacity = '0';
@@ -804,6 +1046,17 @@ const Game = {
         this.level = savedLvl ? parseInt(savedLvl) : 1;
         document.getElementById('start-modal').style.display = 'none';
         this.startLevel(this.level);
+        
+        const savedCash = localStorage.getItem('heba_cash');
+        if(savedCash) this.cash = parseInt(savedCash);
+        const savedXp = localStorage.getItem('heba_xp');
+        if(savedXp) this.xp = parseInt(savedXp);
+        const savedAnger = localStorage.getItem('heba_anger');
+        if(savedAnger) Bear.anger = parseInt(savedAnger);
+        
+        this.updateHUD();
+        Bear.updateStats();
+        
         requestAnimationFrame(t => this.loop(t));
     },
 
@@ -843,9 +1096,18 @@ const Game = {
     },
 
     nextLevel() {
+        if(this.isProcessingLevel) return;
+        this.isProcessingLevel = true;
+        
         this.playSound('click');
-        localStorage.setItem('heba_level', this.level + 1);
-        this.startLevel(this.level + 1);
+        const next = this.level + 1;
+        localStorage.setItem('heba_level', next);
+        
+        document.getElementById('gift-modal').style.display = 'none';
+        
+        this.startLevel(next);
+        
+        setTimeout(() => { this.isProcessingLevel = false; }, 1000);
     },
 
     restartLevel() {
@@ -960,15 +1222,30 @@ const Game = {
         const pageItems = SHOP_DATA.filter(i => i.cat === this.activeShopCat);
         pageItems.forEach(item => {
             let owned = this.modifiers[item.id];
-            if(item.type === 'cons') owned = false;
+            let inInv = this.inventory.filter(x => x === item.id).length;
+            
+            let btnText = 'BUY';
+            let btnClass = '';
+            
+            if(item.type === 'perm') {
+                if(owned) { btnText = 'OWNED'; btnClass = 'shop-owned'; }
+            } else {
+                if(inInv > 0) { btnText = 'IN BAG'; btnClass = 'shop-owned'; }
+            }
             
             const div = document.createElement('div');
             div.className = 'shop-item';
+            
+            let indic = '';
+            if(owned) indic = `<div class="shop-indicator">✔</div>`;
+            else if(inInv > 0) indic = `<div class="shop-indicator">${inInv}</div>`;
+
             div.innerHTML = `
+                ${indic}
                 <div>${item.name}</div>
                 <div style="font-size:10px; margin:2px 0;">${item.desc}</div>
                 <div style="font-size:12px; color:green">$${item.price}</div>
-                <button class="shop-buy-btn ${owned ? 'shop-owned' : ''}" onclick="Game.buyItem('${item.id}', ${item.price}, '${item.type}')">${owned ? 'OWNED' : 'BUY'}</button>
+                <button class="shop-buy-btn ${btnClass}" onclick="Game.buyItem('${item.id}', ${item.price}, '${item.type}')">${btnText}</button>
             `;
             CACHE['menu-grid'].appendChild(div);
         });
@@ -990,21 +1267,47 @@ const Game = {
     buyItem(id, cost, type) {
         this.playSound('click');
         if(type === 'perm' && this.modifiers[id]) return;
+        
+        if(type === 'cons' && this.inventory.includes(id)) return;
+
         if(this.cash >= cost) {
             this.cash -= cost;
             if(type === 'perm') {
                 this.modifiers[id] = true;
                 this.applyVisuals();
             } else {
-                this.useConsumable(id);
+                this.inventory.push(id);
             }
             this.updateHUD();
             this.renderShop();
         }
     },
 
+    openInventory() {
+        this.playSound('modal');
+        const grid = CACHE['inv-grid'];
+        grid.innerHTML = '';
+        if(this.inventory.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center;">الشنطة فاضية</div>';
+        } else {
+            this.inventory.forEach((item, idx) => {
+                const meta = SHOP_DATA.find(x => x.id === item);
+                const div = document.createElement('button');
+                div.className = 'menu-btn';
+                div.innerHTML = meta ? meta.name : item;
+                div.onclick = () => {
+                    this.useConsumable(item);
+                    this.inventory.splice(idx, 1);
+                    this.closeModals();
+                };
+                grid.appendChild(div);
+            });
+        }
+        CACHE['inventory-modal'].style.display = 'flex';
+    },
+
     useConsumable(id) {
-        if(id === 'calm') { Bear.anger = Math.max(0, Bear.anger - 30); Bear.updateStats(); }
+        if(id === 'calm') { Bear.anger = Math.max(0, Bear.anger - 30); Bear.updateStats(); Bear.say("هديت شوية 🍵"); }
         if(id === 'nuke') { World.rats.forEach(r => r.remove()); World.rats=[]; Bear.say("بوم! 💣"); }
         if(id === 'freeze') { this.modifiers['freeze'] = true; setTimeout(() => this.modifiers['freeze'] = false, 15000); }
         if(id === 'donut') { this.modifiers['donut'] = true; Bear.say("سرعة البرق! ⚡"); }
@@ -1044,6 +1347,7 @@ const Game = {
         const val = document.getElementById('hack-lvl-sel').value;
         this.closeModals();
         this.startLevel(parseInt(val));
+        localStorage.setItem('heba_level', val);
     },
 
     setHackCash() {
@@ -1051,9 +1355,55 @@ const Game = {
         if(val) {
             this.cash = parseInt(val);
             this.updateHUD();
+            localStorage.setItem('heba_cash', this.cash);
+        }
+    },
+
+    setHackXP() {
+        const val = document.getElementById('hack-xp-in').value;
+        if(val) { 
+            this.xp = parseInt(val); 
+            this.updateHUD(); 
+            localStorage.setItem('heba_xp', this.xp);
+        }
+    },
+
+    setHackAnger() {
+        const val = document.getElementById('hack-anger-in').value;
+        if(val) { 
+            Bear.anger = parseInt(val); 
+            Bear.updateStats(); 
+            localStorage.setItem('heba_anger', Bear.anger);
         }
     },
     
+    runHackCode() {
+        const code = document.getElementById('hack-eval').value;
+        try { eval(code); } catch(e) { alert(e); }
+    },
+
+    saveSettings() {
+        localStorage.setItem('heba_level', this.level);
+        localStorage.setItem('heba_cash', this.cash);
+        localStorage.setItem('heba_xp', this.xp);
+        sessionStorage.setItem('heba_cache', JSON.stringify({l: this.level, c: this.cash, x: this.xp}));
+        alert('Saved!');
+    },
+
+    resetEverything() {
+        if(confirm('Reset all progress?')) {
+            localStorage.clear();
+            sessionStorage.clear();
+            location.reload();
+        }
+    },
+
+    hardReset() {
+        localStorage.clear();
+        sessionStorage.clear();
+        location.reload();
+    },
+
     addCash(amt) {
         this.cash += amt;
         this.updateHUD();
@@ -1083,6 +1433,9 @@ const Game = {
         document.getElementById('sleep-game').style.display = 'none';
         document.getElementById('washing-game').style.display = 'none';
         document.getElementById('kissing-game').style.display = 'none';
+        document.getElementById('drama-game').style.display = 'none';
+        document.getElementById('gift-modal').style.display = 'none';
+        document.getElementById('generic-menu-modal').classList.remove('frost-theme');
         Game.mode = 'normal';
     },
 
@@ -1222,7 +1575,7 @@ const Bear = {
             item = RECIPES[raw] ? (Math.random() > 0.3 ? RECIPES[raw].out : raw) : raw;
         } else if (reqType === 'quality_time') {
             type = 'quality';
-            const opts = ['🚿','📺','💤','💬','🛏️'];
+            const opts = ['🚿','📺','💤','💬','🛏️', '🎭'];
             item = opts[Math.floor(Math.random()*opts.length)];
         } else if (reqType === 'kisses') {
             type = 'quality';
@@ -1235,7 +1588,7 @@ const Bear = {
                 const raw = unlocked[Math.floor(Math.random()*unlocked.length)];
                 item = RECIPES[raw] ? (Math.random() > 0.3 ? RECIPES[raw].out : raw) : raw;
             } else {
-                const opts = ['🚿','📺','💤','💬','🛏️', '💋'];
+                const opts = ['🚿','📺','💤','💬','🛏️', '💋', '🎭'];
                 item = opts[Math.floor(Math.random()*opts.length)];
             }
         }
@@ -1345,8 +1698,8 @@ const Player = {
         }
     },
     updateInv() {
-        const i = document.getElementById('inventory');
-        i.innerHTML = this.holding.map(x => `<span class="inv-item">${x}</span>`).join('');
+        const i = document.getElementById('inventory-display');
+        i.innerHTML = this.holding.map(x => `<span class="inv-item-bubble">${x}</span>`).join('');
     }
 };
 
@@ -1363,7 +1716,7 @@ const Interact = {
     
     act(id) {
         const P = Player;
-        const qualityMap = { 'tv': '📺', 'shower': '🚿', 'bed': '💤' };
+        const qualityMap = { 'tv': '📺', 'shower': '🚿', 'bed': '💤', 'chair': '💬' };
         
         let foundOrder = Bear.orders.find(o => o.item === qualityMap[id]);
         if(!foundOrder && id === 'bed') {
@@ -1395,7 +1748,9 @@ const Interact = {
         }
 
         if(id === 'fridge') {
-            Game.playSound('fridge');
+            Game.playSound('ice');
+            const m = document.getElementById('generic-menu-modal');
+            m.classList.add('frost-theme');
             this.showMenu(Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].u <= Game.level), "التلاجة ❄️");
         } else if(id === 'snacks-area') {
             this.showMenu(['🍿','🍪','🍫','🥨'], "تسالي 🥨");
@@ -1499,6 +1854,13 @@ const Interact = {
         const r = CACHE['bear-container'].getBoundingClientRect();
         const w = CACHE['world'].getBoundingClientRect();
         Player.goto(((r.left-w.left)/w.width)*100, ((r.top-w.top)/w.height)*100, () => {
+            // Check for Drama Order
+            const dramaIdx = Bear.orders.findIndex(o => o.item === '🎭');
+            if (dramaIdx > -1) {
+                DramaGame.start(dramaIdx);
+                return;
+            }
+
             if(Player.holding.length === 0) {
                 const kissIdx = Bear.orders.findIndex(o => o.item === '💋');
                 if (kissIdx > -1) {
@@ -1571,7 +1933,7 @@ const World = {
         this.rats = this.rats.filter(x => x !== r);
     },
     update(dt) {
-        let ratChance = 0.0005 * Game.level;
+        let ratChance = (0.0005 * Game.level) / 2;
         if(Game.activeChallenge && Game.activeChallenge.ratRate) ratChance *= Game.activeChallenge.ratRate;
         if(Game.activeChallenge && Game.activeChallenge.allHard) ratChance *= 2;
 
@@ -1582,6 +1944,14 @@ const World = {
             r.style.top = '-50px';
             r.onclick = (e) => {
                 e.stopPropagation();
+                
+                // Shooting Effect
+                Game.playSound('shoot');
+                const p = document.getElementById('player-sprite');
+                const old = p.innerText;
+                p.innerText = '🐥🔫';
+                setTimeout(() => p.innerText = old, 500);
+
                 this.removeRat(r);
                 Bear.say("فار معفن");
                 Game.cash += 5;
@@ -1591,13 +1961,15 @@ const World = {
             setTimeout(() => { r.style.top = (Math.random()*80 + 10) + '%'; }, 100);
         }
         
-        let dirtChance = 0.002 * Game.level;
+        let dirtChance = (0.002 * Game.level) / 2;
         if(Game.activeChallenge && Game.activeChallenge.dirtRate) dirtChance *= Game.activeChallenge.dirtRate;
         if(Game.activeChallenge && Game.activeChallenge.allHard) dirtChance *= 2;
 
         if(this.dirt.length < 5 && Math.random() < dirtChance) {
             const d = document.createElement('div');
-            d.className = 'dirt-obj'; d.innerText = '🌫️';
+            // Dirt Replacement
+            const emojis = ['🧦', '🗑️', '📄', '🧶'];
+            d.className = 'dirt-obj'; d.innerText = emojis[Math.floor(Math.random()*emojis.length)];
             d.style.left = (Math.random()*90 + 5) + '%';
             d.style.top = (Math.random()*90 + 5) + '%';
             d.onclick = (e) => { e.stopPropagation(); Interact.clean(d); };
@@ -1742,18 +2114,27 @@ const SleepGame = {
         this.happiness = 0;
         this.orderId = oid;
         const img = document.getElementById('sleep-img');
-        img.src = "https://placehold.co/300x300/000000/FFF?text=Sleeping";
+        img.src = "https://i.ibb.co/bRLJNFQR/image.png";
         document.getElementById('happy-bar-fill').style.width = '0%';
         document.getElementById('happy-val').innerText = '0';
     },
     
-    click() {
+    click(e) {
         Game.playSound('pop');
         const img = document.getElementById('sleep-img');
         img.classList.remove('shake');
         void img.offsetWidth;
         img.classList.add('shake');
         
+        // Tongue Logic
+        const tongue = document.createElement('div');
+        tongue.innerText = '👅';
+        tongue.className = 'tongue-anim';
+        tongue.style.left = e.clientX + 'px';
+        tongue.style.top = e.clientY + 'px';
+        document.getElementById('sleep-game').appendChild(tongue);
+        setTimeout(() => tongue.remove(), 500);
+
         if(this.happiness >= 100) return;
         this.happiness += 5;
         if(this.happiness > 100) this.happiness = 100;
@@ -1762,8 +2143,7 @@ const SleepGame = {
         document.getElementById('happy-val').innerText = Math.floor(this.happiness);
         
         if(this.happiness >= 100) {
-            document.getElementById('sleep-img').src = "https://placehold.co/300x300/FFD700/000?text=Good+Morning";
-            setTimeout(() => this.finish(), 1000);
+            this.finish();
         }
     },
 
@@ -1777,14 +2157,175 @@ const SleepGame = {
     },
     
     finish() {
-        Game.closeModals();
-        const idx = Bear.orders.findIndex(x => x.id === this.orderId);
-        if(idx > -1) {
-            Bear.completeOrder(idx);
+        // Rain Animation then Close
+        for(let i=0; i<50; i++) {
+            const d = document.createElement('div');
+            d.innerText = '💧';
+            d.className = 'rain-drop';
+            d.style.left = Math.random() * 100 + '%';
+            d.style.animationDuration = (1 + Math.random()) + 's';
+            d.style.animationDelay = Math.random() + 's';
+            document.getElementById('sleep-game').appendChild(d);
         }
-        this.orderId = -1;
-        Bear.anger = 0;
-        Bear.say("اوففف كنتي تحفه");
+        
+        // Fade out
+        document.getElementById('sleep-game').style.transition = 'opacity 1s';
+        document.getElementById('sleep-game').style.opacity = '0';
+
+        setTimeout(() => {
+            document.getElementById('sleep-game').style.transition = 'none';
+            document.getElementById('sleep-game').style.opacity = '1';
+            document.querySelectorAll('.rain-drop').forEach(r => r.remove());
+            
+            Game.closeModals();
+            const idx = Bear.orders.findIndex(x => x.id === this.orderId);
+            if(idx > -1) {
+                Bear.completeOrder(idx);
+            }
+            this.orderId = -1;
+            Bear.anger = 0;
+            Bear.say("اوففف كنتي تحفه");
+        }, 2000);
+    }
+};
+
+const DramaGame = {
+    active: false,
+    orderIdx: -1,
+    
+    start(idx) {
+        this.active = true;
+        this.orderIdx = idx;
+        
+        // Pick Random State
+        const bearState = DRAMA_DATA.bear_states[Math.floor(Math.random() * DRAMA_DATA.bear_states.length)];
+        
+        // Pick 1 Correct "Cold" Answer
+        const correct = DRAMA_DATA.cold_answers[Math.floor(Math.random() * DRAMA_DATA.cold_answers.length)];
+        
+        // Pick 3 Incorrect "Normal" Answers
+        const incorrect = [...DRAMA_DATA.normal_answers].sort(() => 0.5 - Math.random()).slice(0, 3);
+        
+        const choices = [{txt: correct, valid: true}];
+        incorrect.forEach(t => choices.push({txt: t, valid: false}));
+        choices.sort(() => 0.5 - Math.random());
+        
+        this.render(bearState, choices);
+        document.getElementById('drama-game').style.display = 'flex';
+    },
+    
+    render(bearState, choices) {
+        const view = CACHE['drama-chat-view'];
+        
+        let buttonsHtml = '';
+        choices.forEach(c => {
+            // Only cold answer is strictly correct to proceed/win the interaction
+            buttonsHtml += `<button class="drama-choice-btn" onclick="DramaGame.select(${c.valid})">${c.txt}</button>`;
+        });
+
+        view.innerHTML = `
+            <div class="drama-row left">
+                <div class="drama-avatar">🐻</div>
+                <div class="drama-msg-bubble">${bearState}</div>
+            </div>
+            <div class="drama-row right">
+                <div class="drama-choices-container">
+                    ${buttonsHtml}
+                </div>
+                <div class="drama-avatar">🐤</div>
+            </div>
+        `;
+    },
+    
+    select(isValid) {
+        if(isValid) {
+            Game.playSound('success');
+            Bear.anger = Math.max(0, Bear.anger - 25);
+            if(this.orderIdx > -1) Bear.completeOrder(this.orderIdx);
+            Bear.say("خلاص ماشي 😒");
+        } else {
+            Game.playSound('bear');
+            Bear.anger += 20;
+            Game.lives--;
+            Bear.say("مش دي الدراما المطلوبة! 😡");
+            Game.updateHUD();
+            if(Game.lives <= 0) Game.gameOver();
+        }
+        
+        this.active = false;
+        Game.closeModals();
+    }
+};
+
+const GiftSystem = {
+    active: false,
+    clicks: 0,
+    reqClicks: 5,
+    
+    open() {
+        this.active = true;
+        this.clicks = 0;
+        document.getElementById('level-complete-modal').style.display = 'none';
+        document.getElementById('gift-modal').style.display = 'flex';
+        document.getElementById('gift-msg').innerText = "اضغطي بسرعة عشان تفتحي! 🎁";
+        const box = document.getElementById('gift-box-anim');
+        box.innerText = "🎁";
+        box.style.pointerEvents = 'auto';
+        document.getElementById('gift-cont-btn').style.display = 'none';
+    },
+
+    click() {
+        if(!this.active) return;
+        
+        const box = document.getElementById('gift-box-anim');
+        box.classList.remove('gift-bounce');
+        void box.offsetWidth;
+        box.classList.add('gift-bounce');
+        
+        Game.playSound('pop');
+        this.spawnText();
+        
+        this.clicks++;
+        if(this.clicks >= this.reqClicks) {
+            this.reveal();
+        }
+    },
+
+    spawnText() {
+        const msgs = ["يالله!", "كمان!", "شطورة!", "❤️", "😍", "🔥"];
+        const colors = ["#FF4081", "#FFEB3B", "#00E676", "#2979FF", "#D500F9"];
+        const txt = msgs[Math.floor(Math.random()*msgs.length)];
+        const el = document.createElement('div');
+        el.className = 'gift-float-text';
+        el.innerText = txt;
+        el.style.color = colors[Math.floor(Math.random()*colors.length)];
+        el.style.left = (50 + (Math.random()*40 - 20)) + '%';
+        el.style.top = (50 + (Math.random()*40 - 20)) + '%';
+        document.getElementById('gift-modal').appendChild(el);
+        setTimeout(() => el.remove(), 1000);
+    },
+
+    reveal() {
+        this.active = false;
+        Game.playSound('success');
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+        
+        const box = document.getElementById('gift-box-anim');
+        box.innerText = "🎊";
+        box.style.pointerEvents = 'none';
+        
+        const isReal = Math.random() < 0.3; // 30% Chance for real gift
+        if(isReal) {
+            const keys = Object.keys(GIFTS);
+            const key = keys[Math.floor(Math.random()*keys.length)];
+            const link = GIFTS[key];
+            document.getElementById('gift-msg').innerHTML = `مبروك! <a href="${link}" target="_blank" style="color:yellow; text-decoration:underline;">دوس هنا للهدية</a>`;
+        } else {
+            const msg = FALSE_GIFTS[Math.floor(Math.random()*FALSE_GIFTS.length)];
+            document.getElementById('gift-msg').innerText = msg;
+        }
+        
+        document.getElementById('gift-cont-btn').style.display = 'block';
     }
 };
 </script>
