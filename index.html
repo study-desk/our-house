@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>بيتنا الجميل</title>
+<title>ChickMania</title>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
 :root {
@@ -96,46 +96,62 @@ body {
 
 #splash-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
     z-index: 5000; display: flex; flex-direction: column; 
     align-items: center; justify-content: space-between;
-    transition: opacity 0.5s; overflow: hidden;
+    transition: background 1s, opacity 0.5s; overflow: hidden;
 }
-.stars {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background-image: radial-gradient(white 1px, transparent 1px);
-    background-size: 50px 50px; opacity: 0.5; pointer-events: none;
+
+#splash-screen.day-theme {
+    background: linear-gradient(180deg, #87CEEB 0%, #E0F7FA 100%);
 }
-.santa-wrapper {
-    position: absolute; top: 15%; width: 100%; height: 60px; pointer-events: none;
+#splash-screen.night-theme {
+    background: linear-gradient(180deg, #0D1b2a 0%, #1B263B 100%);
 }
-.santa {
-    position: absolute; font-size: 40px;
-    animation: santaFly 8s linear infinite;
-    filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+
+#splash-stats {
+    position: absolute; top: 20px; left: 20px; right: 20px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    z-index: 5005; pointer-events: none;
 }
-@keyframes santaFly {
-    0% { transform: translateX(120vw) translateY(0) scaleX(1); }
-    25% { transform: translateX(50vw) translateY(20px) scaleX(1); }
-    50% { transform: translateX(-20vw) translateY(0) scaleX(1); }
-    100% { transform: translateX(-20vw) translateY(0) scaleX(1); }
+.stat-badge {
+    background: rgba(255,255,255,0.9); border: 3px solid black;
+    border-radius: 12px; padding: 8px 15px; font-family: 'NeoFont';
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2); text-align: center;
+    pointer-events: auto;
 }
-.snow-container {
-    position: absolute; width: 100%; height: 100%; pointer-events: none;
+.stat-value { color: var(--neo-pink); font-size: 20px; }
+.stat-label { font-size: 12px; color: #555; }
+.share-btn {
+    background: #29B6F6; color: white; border: none; padding: 5px 10px;
+    border-radius: 6px; font-size: 12px; margin-top: 5px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    width: 100%; box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
 }
-.snowflake {
-    position: absolute; color: white; opacity: 0.8;
-    animation: fall linear infinite; top: -20px;
+
+.sky-obj { position: absolute; transition: all 1s; z-index: 1; }
+.sun-graphic {
+    top: -50px; right: -50px; font-size: 150px; 
+    animation: rotateSun 20s linear infinite;
+    filter: drop-shadow(0 0 20px gold);
+    display: none;
 }
-@keyframes fall { to { transform: translateY(110vh); } }
+.moon-graphic {
+    top: 30px; right: 30px; font-size: 100px;
+    filter: drop-shadow(0 0 15px white);
+    display: none;
+}
+.day-theme .sun-graphic { display: block; }
+.night-theme .moon-graphic { display: block; }
+
+@keyframes rotateSun { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .splash-content {
     z-index: 10; display: flex; flex-direction: column; align-items: center;
-    margin-top: 15vh;
+    margin-top: 25vh;
 }
 .splash-title {
-    font-family: 'NeoFont', sans-serif; font-size: 60px; color: var(--neo-yellow);
-    text-shadow: 4px 4px 0px #000, 0 0 20px rgba(255,215,0,0.5); 
+    font-family: 'NeoFont', sans-serif; font-size: 60px; color: var(--neo-pink);
+    text-shadow: 4px 4px 0px #000, 0 0 20px rgba(255,255,255,0.5); 
     margin-bottom: 20px; transform: rotate(-3deg);
     animation: floatTitle 3s ease-in-out infinite;
 }
@@ -146,17 +162,12 @@ body {
     display: flex; justify-content: center; align-items: flex-end;
     padding-bottom: 40px;
 }
-.ground-snow {
+.ground-grass {
     position: absolute; bottom: 0; width: 100%; height: 60px;
-    background: white; border-top: 4px solid #000;
+    background: #76FF03; border-top: 4px solid #000;
     border-radius: 50% 50% 0 0 / 20px 20px 0 0;
 }
-.s-house {     font-size: 272px;
-    z-index: 0;
-    position: relative;
-    bottom: -22px;
-    filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.5));}
-.s-tree { font-size: 80px; position: absolute; left: 50%; margin-left: -140px; bottom: 20px; z-index: 1; animation: treeShake 3s infinite; }
+.s-house { font-size: 272px; z-index: 0; position: relative; bottom: -22px; filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.5)); }
 .s-bear-group { 
     position: absolute; right: 50%; margin-right: -150px; bottom: 20px; 
     display: flex; gap: 5px; z-index: 3; align-items: flex-end;
@@ -184,8 +195,6 @@ body {
 .splash-heart-anim {
     position: absolute; font-size: 20px; animation: floatUp 1.5s infinite linear;
 }
-
-@keyframes treeShake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } }
 
 #hud {
     position: fixed; top: 0; left: 0; width: 100%; height: 70px;
@@ -264,32 +273,26 @@ body {
 #stove { bottom: 8%; left: 2%; }
 #stove2 { bottom: 8%; left: 18%; }
 #oven { bottom: 8%; left: 34%; }
-#oven2 { bottom: 8%; left: 50%; }
+#pizza-oven { bottom: 8%; left: 50%; display: none; }
 #prep { bottom: 25%; left: 2%; }
 #prep2 { bottom: 25%; left: 18%; }
 #sushi-maker { bottom: 25%; left: 34%; }
 #sink { bottom: 8%; right: 2%; }
 #plate-station { bottom: 25%; right: 2%; }
+#dishes-pile { bottom: 8%; right: 20%; display: none; }
 
 #fryer { top: 20%; right: 2%; }
 #fryer2 { top: 35%; right: 2%; }
 #icecream { top: 50%; right: 2%; }
 #coffee-machine { top: 65%; right: 2%; }
-#snacks-area { top: 80%; right: 2%; }
 #cow-station { top: 5%; right: 15%; }
+#hangout-door { top: 60%; left: 2%; }
 
-#stove, #oven, #prep, #fryer, #icecream, #coffee-machine, #snacks-area, #cow-station, #sink, #plate-station, #sushi-maker, #stove2, #prep2, #fryer2, #oven2 { 
+#stove, #oven, #prep, #fryer, #icecream, #coffee-machine, #cow-station, #sink, #plate-station, #sushi-maker, #stove2, #prep2, #fryer2, #pizza-oven, #dishes-pile, #hangout-door { 
     font-size: 32px; position: absolute;
 }
 
-#shower, #bed, #tv, #sofa, #chair, #kissing-bench { font-size: 40px; }
-#dirty-plates { 
-    position: absolute; top: -15px; right: -10px; 
-    background: var(--neo-pink); color: white; 
-    border: 2px solid black; width: 28px; height: 28px; border-radius: 50%;
-    font-size: 14px; display: none; align-items: center; justify-content: center; z-index: 20;
-    box-shadow: 2px 2px 0px rgba(0,0,0,0.3); animation: bounce 1s infinite;
-}
+#shower, #bed, #tv, #sofa, #kissing-bench { font-size: 40px; }
 
 #heba {
     position: absolute; width: 50px; height: 50px; font-size: 45px; z-index: 100;
@@ -303,11 +306,18 @@ body {
     font-size: 12px; font-weight: bold; white-space: nowrap; display: flex; gap: 8px;
     box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
 }
-#inventory-display { position: absolute; top: -65px; display: flex; gap: -5px; }
+#inventory-display { position: absolute; top: -65px; display: flex; gap: 5px; }
 .inv-item-bubble { 
     font-size: 20px; background: var(--neo-white); padding: 5px; 
     border: 2px solid var(--neo-black); border-radius: 50%; 
     box-shadow: 2px 2px 0px rgba(0,0,0,0.2); z-index: 1;
+    width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; position: relative;
+}
+.inv-close-btn {
+    position: absolute; top: -5px; right: -5px; width: 14px; height: 14px;
+    background: red; color: white; border-radius: 50%; font-size: 10px;
+    border: 1px solid black; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto;
 }
 
 #bear-container {
@@ -356,27 +366,59 @@ body {
     text-shadow: 0 0 10px rgba(255,255,255,0.8);
 }
 
-#sleep-game, #kissing-game, #washing-game, #gift-modal, #drama-game {
+#hat-game, #kissing-game, #washing-game, #gift-modal, #drama-game, #supermarket-game, #pizza-game, #calendar-modal, #hangout-game, #beg-modal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.92); z-index: 4000; display: none; overflow: hidden;
     touch-action: none; flex-direction: column; align-items: center; justify-content: center;
 }
-#sleep-game { background: linear-gradient(135deg, #304FFE 0%, #1A237E 100%); z-index: 3000; justify-content: flex-start; }
-
-#sleep-img {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover; z-index: 10; cursor: pointer;
-    transition: transform 0.05s;
+/* Objective 1: Calendar Position Fix - ensure z-index is higher than splash (5000) */
+#calendar-modal {
+    z-index: 6000 !important;
 }
-#sleep-img:active { transform: scale(0.98); }
-.shake { animation: shake 0.5s; }
+#beg-modal {
+    z-index: 7000 !important;
+}
+
+#hat-game { 
+    background-size: cover; background-position: center; 
+    z-index: 3000; justify-content: center; 
+}
+
+#sleep-phrase {
+    position: absolute; top: 15%; width: 80%; text-align: center;
+    color: white; font-family: 'NeoFont'; font-size: 30px;
+    text-shadow: 2px 2px 4px black; z-index: 25;
+}
+
+#sleep-scene {
+    position: relative; width: 100%; height: 60vh;
+    display: flex; justify-content: center; align-items: center;
+}
+#sleep-bear {
+    position: absolute; font-size: 150px; z-index: 10;
+    transform: scale(1.2); filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+}
+#sleep-bird {
+    position: absolute; font-size: 80px; z-index: 20;
+    bottom: 35%;
+}
+.bounce-shake {
+    animation: shakeBounce 0.4s ease-in-out;
+}
+@keyframes shakeBounce {
+    0% { transform: translateY(0) rotate(0); }
+    25% { transform: translateY(-30px) rotate(5deg); }
+    50% { transform: translateY(-30px) rotate(-5deg); }
+    75% { transform: translateY(-10px) rotate(3deg); }
+    100% { transform: translateY(0) rotate(0); }
+}
 
 #happiness-meter { 
     position: absolute; top: 40px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20;
 }
 #happy-text { color: var(--neo-yellow); font-family: 'NeoFont'; font-size: 28px; text-shadow: 3px 3px 0px var(--neo-black); margin-bottom: 8px; }
 #happy-bar-container { width: 220px; height: 24px; background: #fff; border: 3px solid #000; border-radius: 12px; overflow: hidden; box-shadow: 4px 4px 0px rgba(0,0,0,0.3); }
-#happy-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #F48FB1 0%, #F06292 100%); transition: width 0.1s linear; }
+#happy-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #F48FB1 0%, #AB47BC 50%, #29B6F6 100%); transition: width 0.1s linear; }
 
 #washing-plate-container, #kissing-plate-container {
     position: relative; width: 300px; height: 300px; 
@@ -417,7 +459,7 @@ body {
 .tab-btn.active { background: var(--neo-yellow); transform: translateY(-2px); box-shadow: 2px 2px 0 black; }
 .shop-indicator { position: absolute; top: -5px; right: -5px; background: var(--neo-blue); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid black; }
 
-#gift-box-anim {
+#gift-box-anim, .gift-box-anim-big {
     font-size: 100px; cursor: pointer; animation: bounce 2s infinite;
     filter: drop-shadow(0 0 20px gold);
     transition: transform 0.1s;
@@ -439,7 +481,6 @@ body {
     animation: popIn 0.3s;
 }
 
-/* Drama & Sleep Mode Extras */
 .tongue-anim {
     position: absolute; font-size: 60px; pointer-events: none;
     animation: fadeOutTongue 0.5s forwards; z-index: 100;
@@ -452,7 +493,6 @@ body {
 }
 @keyframes rainFall { to { transform: translateY(110vh); opacity: 0; } }
 
-/* TELEGRAM STYLE DRAMA CHAT */
 #drama-game {
     background: #0e1621;
     display: none;
@@ -548,6 +588,160 @@ body {
     text-shadow: 0 0 10px #FF4081;
     margin-bottom: 20px;
 }
+
+#supermarket-game {
+    background: #FFECB3;
+    display: none;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 5000;
+    cursor: pointer;
+}
+.market-zone {
+    position: absolute;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.4);
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px;
+    padding: 10px;
+}
+.market-item-node {
+    font-size: 16px; cursor: pointer;
+    background: white; border: 1px solid black; border-radius: 5px;
+    padding: 5px; box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    transition: transform 0.1s;
+}
+.market-item-node:active { transform: scale(0.9); }
+#market-bear-player {
+    position: absolute; font-size: 60px;
+    transition: all 0.5s linear;
+    z-index: 100;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));
+}
+#market-ui {
+    position: fixed; bottom: 20px; right: 20px;
+    background: white; border: 3px solid black; border-radius: 12px;
+    padding: 15px; font-weight: bold; z-index: 200;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.market-label {
+    position: absolute; top: -15px; left: 10px; background: #FF5252; color: white;
+    padding: 2px 8px; font-size: 12px; border-radius: 8px; border: 1px solid black;
+}
+
+#pizza-game {
+    background: #FFF3E0;
+    display: none;
+}
+#pizza-workstation {
+    width: 90%; height: 60%; background: white;
+    border: 4px solid #5D4037; border-radius: 20px;
+    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    box-shadow: 0 10px 0 rgba(0,0,0,0.2);
+}
+#pizza-plate {
+    width: 200px; height: 200px; border-radius: 50%;
+    background: #EFEBE9; border: 4px solid #BCAAA4;
+    position: absolute; top: 20px;
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+    align-content: center; gap: 5px;
+}
+#pizza-base { font-size: 180px; position: absolute; pointer-events: none; opacity: 0.5; }
+#pizza-ingredients-row {
+    width: 100%; height: 100px; background: #E0E0E0;
+    border-top: 4px solid #5D4037;
+    display: flex; overflow-x: auto; align-items: center; gap: 10px; padding: 10px;
+}
+.pizza-ing {
+    font-size: 40px; background: white; border: 2px solid black; padding: 5px;
+    border-radius: 8px; cursor: grab; user-select: none;
+}
+#pizza-order-ticket {
+    position: absolute; top: 10px; left: 10px;
+    background: white; border: 2px solid black; padding: 10px;
+    font-family: monospace; font-size: 16px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2); transform: rotate(-2deg);
+}
+.on-pizza { font-size: 24px; position: absolute; pointer-events: none; }
+#pizza-timer-bar {
+    position: absolute; top: 100px; left: 50%; transform: translateX(-50%);
+    width: 80%; height: 20px; background: #333; border: 2px solid #000;
+    border-radius: 10px; overflow: hidden;
+}
+#pizza-timer-fill {
+    width: 100%; height: 100%; background: #00E676; transition: width 1s linear;
+}
+
+#hangout-game {
+    background-image: url('https://schillerrent.hu/wp-content/uploads/2024/11/budapest-in-autumn.jpg');
+    display: none;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 5000;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+#ho-street {
+    position: absolute; bottom: 0; width: 100%; height: 150px; background: #616161; border-top: 5px solid #000;
+}
+#ho-road-marks {
+    position: absolute; bottom: 70px; width: 100%; height: 10px; 
+    background: repeating-linear-gradient(90deg, #fff, #fff 50px, transparent 50px, transparent 100px);
+}
+#ho-door-exit { position: absolute; bottom: 20px; left: 20px; font-size: 50px; cursor: pointer; }
+#ho-bear { position: absolute; bottom: 50px; left: 50%; font-size: 70px; transition: left 0.5s linear; cursor: pointer; }
+#ho-bird { position: absolute; bottom: 60px; right: 40%; font-size: 50px; cursor: pointer; }
+#ho-timer { position: absolute; top: 20px; right: 20px; font-size: 30px; color: white; font-family: 'NeoFont'; background: black; padding: 10px; border-radius: 12px; }
+#ho-req { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); background: white; padding: 10px; border-radius: 12px; border: 2px solid black; font-size: 20px; white-space: nowrap; }
+#ho-items-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; pointer-events: none; }
+.ho-falling-item { position: absolute; font-size: 40px; will-change: top; }
+
+#bear-plate-trigger {
+    position: absolute; top: -10px; right: -10px; font-size: 30px; 
+    animation: bounce 1s infinite; cursor: pointer; z-index: 100; display: none;
+}
+
+/* Calendar & Daily Gift Styles */
+.cal-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+    margin: 15px 0; max-height: 50vh; overflow-y: auto;
+}
+.cal-day {
+    aspect-ratio: 1; background: #eee; border: 2px solid #333;
+    border-radius: 8px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; position: relative;
+    font-size: 14px; color: #555;
+}
+.cal-day.claimed { background: #C8E6C9; border-color: #2E7D32; color: #2E7D32; cursor: pointer; }
+.cal-day.today { 
+    background: #FFF9C4; border-color: #FBC02D; animation: pulse 1s infinite;
+    cursor: pointer;
+}
+.cal-day.locked { opacity: 0.8; background: #cfd8dc; cursor: pointer; }
+.cal-icon { font-size: 20px; margin-bottom: 2px; }
+.cal-num { font-size: 10px; font-weight: bold; position: absolute; top: 2px; left: 4px; }
+
+.modal-gift-reveal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 6000; background: rgba(0,0,0,0.9);
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+}
+.gift-content-link {
+    background: white; padding: 15px; border-radius: 10px;
+    margin-top: 20px; text-decoration: none; color: blue; font-weight: bold;
+    border: 3px solid black; display: block;
+}
+
+/* Begging Modal Styles */
+.beg-input {
+    width: 100%; padding: 15px; margin: 10px 0; border: 3px solid #000;
+    border-radius: 10px; font-size: 18px; text-align: center; font-weight: bold;
+}
+.beg-counter {
+    font-size: 30px; color: var(--neo-pink); font-family: 'NeoFont'; margin-bottom: 10px;
+}
+
 </style>
 </head>
 <body>
@@ -571,20 +765,37 @@ body {
 <audio id="sfx-clean" src="https://assets.mixkit.co/active_storage/sfx/377/377-preview.mp3"></audio>
 <audio id="sfx-shoot" src="https://assets.mixkit.co/active_storage/sfx/1666/1666-preview.mp3"></audio>
 <audio id="sfx-ice" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+<audio id="sfx-kaching" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+<audio id="sfx-sad" src="https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3"></audio>
 
-<div id="splash-screen" onclick="Game.initSplash()">
-    <div class="stars"></div>
-    <div class="santa-wrapper">
-        <div class="santa">🎅🛷🦌</div>
+<div id="pizza-prop-visual">🍕</div>
+
+<div id="splash-screen">
+    <div id="splash-stats">
+        <div class="stat-badge">
+            <div class="stat-value" id="splash-streak-val">0</div>
+            <div class="stat-label">Daily Streak 🔥</div>
+        </div>
+        <div class="stat-badge">
+            <div class="stat-value" id="splash-score-val">0</div>
+            <div class="stat-label">Score 💰</div>
+            <button class="share-btn" onclick="StreakSystem.shareToTelegram()">
+                Share to @skmadk
+            </button>
+        </div>
     </div>
+
+    <div class="sun-graphic sky-obj">☀️</div>
+    <div class="moon-graphic sky-obj">🌙</div>
     
     <div class="splash-content">
-        <div class="splash-title">OUR HOUSE</div>
-        <div class="neo-btn" style="font-size: 24px; padding: 15px 40px; animation: pulse 2s infinite; z-index: 20;">اضغطي عشان تبدأي</div>
+        <div class="splash-title">ChickMania</div>
+        <button class="neo-btn" style="font-size: 24px; padding: 15px 40px; margin-bottom: 15px; background: var(--neo-green); color: white;" onclick="Game.initSplash()">مش يلا بقي؟</button>
+        <button class="neo-btn" id="daily-gift-btn" onclick="StreakSystem.openCalendar()">🎁 استلم هديتك يا ننه</button>
     </div>
 
     <div class="scene">
-        <div class="s-tree">🎄</div>
+        <div class="s-tree">🌲</div>
         <div class="s-house">🏠</div>
         <div class="s-bear-group">
             <div id="splash-bear-msg" class="splash-bubble"></div>
@@ -594,15 +805,34 @@ body {
                 <div id="splash-chick-hearts" id="splash-hearts-container"></div>
             </span>
         </div>
-        <div class="ground-snow"></div>
+        <div class="ground-grass"></div>
     </div>
-    
-    <div class="snow-container" id="snow-container">
-        <div class="snowflake" style="left: 10%; animation-duration: 5s; animation-delay: 0s;">❄</div>
-        <div class="snowflake" style="left: 20%; animation-duration: 7s; animation-delay: 1s;">❅</div>
-        <div class="snowflake" style="left: 30%; animation-duration: 4s; animation-delay: 2s;">❄</div>
-        <div class="snowflake" style="left: 45%; animation-duration: 6s; animation-delay: 0.5s;">❆</div>
+</div>
+
+<div id="calendar-modal" class="modal-overlay" onclick="if(event.target===this) document.getElementById('calendar-modal').style.display='none'">
+    <div class="modal-box">
+        <h2 style="color:var(--neo-purple)">30 Day Gifts 📅</h2>
+        <div id="cal-grid" class="cal-grid"></div>
+        <button class="neo-btn" style="width:100%" onclick="document.getElementById('calendar-modal').style.display='none'">Close</button>
     </div>
+</div>
+
+<div id="beg-modal" class="modal-overlay">
+    <div class="modal-box" style="border-color: var(--neo-pink); background: #FFF0F5;">
+        <h2 style="color:var(--neo-pink)">Missed Gift! 😱</h2>
+        <p>Type "i love you baba" to unlock!</p>
+        <div id="beg-count" class="beg-counter">0 / 10</div>
+        <input type="text" id="beg-input" class="beg-input" placeholder="Type here...">
+        <button class="neo-btn" onclick="StreakSystem.checkBegInput()" style="width:100%; margin-top:10px;">Send ❤️</button>
+        <button class="neo-btn" onclick="document.getElementById('beg-modal').style.display='none'" style="width:100%; margin-top:10px; background:#ccc;">Cancel</button>
+    </div>
+</div>
+
+<div id="gift-reveal-overlay" class="modal-gift-reveal">
+    <div id="daily-gift-anim" class="gift-box-anim-big">🎁</div>
+    <div id="daily-gift-msg" class="gift-text">Tap to Open!</div>
+    <div id="daily-gift-content"></div>
+    <button class="neo-btn" style="margin-top:20px; display:none;" id="daily-gift-close" onclick="StreakSystem.closeReveal()">Awesome!</button>
 </div>
 
 <div id="hud">
@@ -732,12 +962,16 @@ body {
     <button id="gift-cont-btn" class="neo-btn" onclick="Game.nextLevel()">Level Up & Continue ⏩</button>
 </div>
 
-<div id="sleep-game">
+<div id="hat-game" onclick="HatGame.click(event)">
+    <div id="sleep-phrase"></div>
     <div id="happiness-meter">
         <div id="happy-text">HAPPINESS <span id="happy-val">0</span></div>
         <div id="happy-bar-container"><div id="happy-bar-fill"></div></div>
     </div>
-    <img id="sleep-img" src="" onclick="SleepGame.click(event)">
+    <div id="sleep-scene">
+        <div id="sleep-bird">🐥</div>
+        <div id="sleep-bear">🧸</div>
+    </div>
 </div>
 
 <div id="washing-game">
@@ -757,17 +991,57 @@ body {
     <div id="drama-chat-view" class="drama-chat-box"></div>
 </div>
 
+<div id="supermarket-game" onclick="Supermarket.click(event)">
+    <div id="market-ui">
+        <div>🛒 Items: <span id="cart-count">0</span></div>
+        <button class="neo-btn" style="background:var(--neo-green);" onclick="event.stopPropagation(); Supermarket.close()">Checkout</button>
+    </div>
+    <div id="market-bear-player">🐻</div>
+    <div id="market-zones-container"></div>
+</div>
+
+<div id="pizza-game">
+    <h1 style="color:#E65100; font-family:'NeoFont'; text-shadow: 2px 2px 0px white;">PIZZA MAKER 🍕</h1>
+    <div id="pizza-timer-bar"><div id="pizza-timer-fill"></div></div>
+    <div id="pizza-workstation">
+        <div id="pizza-order-ticket"></div>
+        <div id="pizza-plate">
+            <div id="pizza-base">🍕</div>
+        </div>
+        <div id="pizza-ingredients-row"></div>
+    </div>
+    <button class="neo-btn" style="margin-top:20px; width:200px;" onclick="PizzaGame.serve()">ادينيي فالبيتزا</button>
+</div>
+
+<div id="hangout-game" onclick="HangoutMode.click(event)">
+    <div id="ho-timer">30</div>
+    <div id="ho-street">
+        <div id="ho-road-marks"></div>
+    </div>
+    <div id="ho-door-exit" onclick="HangoutMode.exit()">🚪</div>
+    
+    <div id="ho-items-container"></div>
+    
+    <div id="ho-bird">
+        <div id="ho-req"></div>
+        🐥
+    </div>
+    <div id="ho-bear">🐻</div>
+</div>
+
 <div id="world" onclick="Player.move(event)">
     <div id="zone-living">
         <div id="bed" class="obj" style="left:2%; top:5%;" onclick="Interact.obj('bed', event)">
-            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🛏️</span><div class="obj-label">توضيب</div>
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🛏️</span><div class="obj-label">شقاوه</div>
         </div>
         <div id="tv" class="obj" style="right:2%; top:5%;" onclick="Interact.obj('tv', event)"><span class="vis">📺</span><div class="obj-label">تلفزيون</div></div>
         <div id="sofa" class="obj" style="bottom:15%; left:50%; transform:translateX(-50%);" onclick="Interact.obj('sofa', event)"><span class="vis">🛋️</span></div>
-        <div id="chair" class="obj" style="bottom:35%; left:5%;" onclick="Interact.obj('chair', event)"><span class="vis">🎄</span><div class="obj-label">رغي</div></div>
         <div id="kissing-bench" class="obj" style="bottom:50%; left:15%;" onclick="Interact.obj('kissing-bench', event)"><span class="vis">🪑🪑</span><div class="obj-label">kissing time</div></div>
         <div id="shower" class="obj" style="top:25%; left:2%;" onclick="Interact.obj('shower', event)">
              <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🚿</span><div class="obj-label">دش</div>
+        </div>
+        <div id="hangout-door" class="obj" onclick="Interact.obj('hangout-door', event)">
+            <span class="vis">🚪</span><div class="obj-label">يلا نخرج</div>
         </div>
     </div>
     <div id="zone-kitchen">
@@ -786,6 +1060,9 @@ body {
         </div>
         <div id="oven2" class="obj" onclick="Interact.obj('oven2', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔥</span>
+        </div>
+        <div id="pizza-oven" class="obj" onclick="Interact.obj('pizza-oven', event)">
+            <span class="vis">🍕</span>
         </div>
         <div id="prep" class="obj" onclick="Interact.obj('prep', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🔪</span>
@@ -808,18 +1085,20 @@ body {
         <div id="sushi-maker" class="obj" style="display:none;" onclick="Interact.obj('sushi-maker', event)">
             <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🍘</span>
         </div>
-        <div id="snacks-area" class="obj" style="display:none;" onclick="Interact.obj('snacks-area', event)"><span class="vis">🍿</span></div>
         <div id="cow-station" class="obj" style="display:none;" onclick="Interact.obj('cow-station', event)">
              <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🐄</span>
         </div>
         <div id="sink" class="obj" onclick="Interact.obj('sink', event)">
-            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis">🚰</span>
-            <div id="dirty-plates">0</div>
+            <div class="prog-bar"><div class="prog-fill"></div></div><span class="vis"></span>
         </div>
-        <div id="plate-station" class="obj" onclick="Interact.obj('plate-station', event)"><span class="vis">🍽️</span></div>
+        <div id="plate-station" class="obj" onclick="Interact.obj('plate-station', event)"><span class="vis"></span></div>
+        <div id="dishes-pile" class="obj" onclick="Interact.obj('dishes-pile', event)">
+            <span class="vis"></span>
+        </div>
     </div>
 
     <div id="bear-container" onclick="Interact.bear(event)">
+        <div id="bear-plate-trigger" onclick="event.stopPropagation(); WashingGame.start()">🍽️</div>
         <div id="speech-bubble">Roar!</div>
         <div id="orders-container"></div>
         <div id="the-bear">🧸</div>
@@ -836,6 +1115,61 @@ body {
 </div>
 
 <script>
+const STREAK_DB = [
+    // --- Intimacy & Connection ---
+    { type:'gift', text:'Obimy 🫂 — A warm hug from me, delivered softly through your screen', url:'https://play.google.com/store/apps/details?id=com.obimy.app', flirt:'Until I can hold you for real.' },
+    { type:'gift', text:'SumOne 🥚 — Our tiny shared world, raised by love and check-ins', url:'https://play.google.com/store/apps/details?id=com.monymony.sumone', flirt:'Even distance can’t stop teamwork.' },
+    { type:'gift', text:'Noteit ✏️ — Little handwritten “I miss yous” on your screen', url:'https://play.google.com/store/apps/details?id=me.noteit.widget', flirt:'So my thoughts interrupt your day.' },
+    { type:'gift', text:'Locket 📸 — My face waiting for you every time you unlock', url:'https://play.google.com/store/apps/details?id=com.locket.Locket', flirt:'Surprise. It’s me.' },
+    { type:'gift', text:'Between 💌 — Our private universe where only we exist', url:'https://play.google.com/store/apps/details?id=kr.co.vcnc.android.couple', flirt:'No noise. Just us.' },
+    { type:'gift', text:'Agape 🧠 — Falling in love again, one question at a time', url:'https://play.google.com/store/apps/details?id=com.agape.agape', flirt:'Tell me the deep stuff.' },
+    { type:'gift', text:'Love Nudge ❤️ — Learning exactly how to love you better', url:'https://play.google.com/store/apps/details?id=com.lovenudge.app', flirt:'I’m taking notes.' },
+    { type:'gift', text:'Paired 💞 — Daily rituals that keep us emotionally close', url:'https://play.google.com/store/apps/details?id=com.paired.paired', flirt:'Us, but intentional.' },
+    { type:'gift', text:'Everlove 💖 — A shared diary of feelings and moments', url:'https://play.google.com/store/apps/details?id=com.everlove.app', flirt:'Our memories, protected.' },
+    { type:'gift', text:'Moodspace 🌙 — Checking in on your heart from afar', url:'https://play.google.com/store/apps/details?id=com.moodspace.app', flirt:'Tell me how you really feel.' },
+
+    // --- Online Games (2 Players / Distance-Safe) ---
+    { type:'gift', text:'Sky 🕯️ — Let’s fly together where distance disappears', url:'https://play.google.com/store/apps/details?id=com.tgc.sky.android', flirt:'Hold my hand in the clouds.' },
+    { type:'gift', text:'Plato 🎲 — Mini games, big teasing energy', url:'https://play.google.com/store/apps/details?id=com.plato.android', flirt:'Winner chooses the next kiss.' },
+    { type:'gift', text:'Soul Knight ⚔️ — I protect you in every dungeon', url:'https://play.google.com/store/apps/details?id=com.chillyroom.zhmr.gp', flirt:'Your knight, always online.' },
+    { type:'gift', text:'BombSquad 💣 — Chaos, laughter, and accidental betrayal', url:'https://play.google.com/store/apps/details?id=net.froemling.bombsquad', flirt:'Still choosing you.' },
+    { type:'gift', text:'Draw Something 🎨 — I draw nonsense, you still love me', url:'https://play.google.com/store/apps/details?id=com.zynga.drawsomethingfree', flirt:'Art is optional. Us isn’t.' },
+    { type:'gift', text:'Words With Friends ✍️ — Flirting disguised as vocabulary', url:'https://play.google.com/store/apps/details?id=com.zynga.words', flirt:'Spell my name.' },
+    { type:'gift', text:'Chess.com ♟️ — Outsmarting each other lovingly', url:'https://play.google.com/store/apps/details?id=com.chess', flirt:'Checkmate, but make it romantic.' },
+    { type:'gift', text:'8 Ball Pool 🎱 — Long-distance trash talk included', url:'https://play.google.com/store/apps/details?id=com.miniclip.eightballpool', flirt:'Loser sends voice note.' },
+    { type:'gift', text:'QuizUp-style: Trivia Crack 🧠 — Proving I know you best', url:'https://play.google.com/store/apps/details?id=com.etermax.triviacrack', flirt:'Spoiler: I win.' },
+    { type:'gift', text:'Super Sus 🛸 — I may doubt everyone else, but never you', url:'https://play.google.com/store/apps/details?id=com.je.supersus', flirt:'You’re suspiciously perfect.' },
+
+    // --- Couple / Flirty Games ---
+    { type:'gift', text:'Couple Game ❤️ — Testing how deeply we already know each other', url:'https://play.google.com/store/apps/details?id=com.antoinehabert.couples', flirt:'I know your secrets.' },
+    { type:'gift', text:'Truth or Dare 😏 — Distance makes dares dangerous', url:'https://play.google.com/store/apps/details?id=com.chouic.truthordarecouple', flirt:'Choose wisely.' },
+    { type:'gift', text:'Intimacy 💋 — Questions that slowly remove emotional clothes', url:'https://play.google.com/store/apps/details?id=com.intimacy.app', flirt:'Vulnerability looks good on you.' },
+    { type:'gift', text:'Love Questions 💬 — Midnight talks without awkward silence', url:'https://play.google.com/store/apps/details?id=com.love.questions', flirt:'Keep talking.' },
+    { type:'gift', text:'Desire Lite 🔥 — Flirting with rules (barely)', url:'https://play.google.com/store/apps/details?id=com.lovegame.desirelite', flirt:'I dare you.' },
+
+    // --- Watch / Listen Together ---
+    { type:'gift', text:'Rave 🍿 — Same movie, same heartbeat', url:'https://play.google.com/store/apps/details?id=com.rave.android', flirt:'I imagine the cuddles.' },
+    { type:'gift', text:'Teleparty 🎬 — Press play, don’t leave early', url:'https://www.teleparty.com', flirt:'Stay till the credits.' },
+    { type:'gift', text:'Spotify Blend 🎶 — Our moods mixed into one playlist', url:'https://www.spotify.com/blend/', flirt:'Hear me missing you.' },
+    { type:'gift', text:'SoundCloud Messages 🎧 — Songs as love letters', url:'https://soundcloud.com', flirt:'This one’s about you.' },
+    { type:'gift', text:'YouTube Watch Together 🔴 — Falling asleep on call', url:'https://www.youtube.com', flirt:'Don’t hang up.' },
+
+    // --- Time, Memory & Future ---
+    { type:'gift', text:'TimeTree 📅 — Counting days until distance loses', url:'https://play.google.com/store/apps/details?id=works.jubilee.timetree', flirt:'Every countdown ends with you.' },
+    { type:'gift', text:'Countdown Widget ⏳ — Watching time behave', url:'https://play.google.com/store/apps/details?id=com.samruston.countdown', flirt:'Soon.' },
+    { type:'gift', text:'Google Photos Shared Album 🖼️ — Our memories living together', url:'https://photos.google.com', flirt:'Proof we’re real.' },
+    { type:'gift', text:'Jour 📖 — Writing to you, every day', url:'https://play.google.com/store/apps/details?id=com.jourapp', flirt:'Dear you…' },
+    { type:'gift', text:'Capsule 🕰️ — Messages for our future selves', url:'https://capsuleapp.com', flirt:'We’ll read this together.' },
+
+    // --- Soft Night / Emotional ---
+    { type:'gift', text:'Moonly 🌙 — Syncing our calm across time zones', url:'https://play.google.com/store/apps/details?id=com.moonly.app', flirt:'Breathe with me.' },
+    { type:'gift', text:'Sleep Sounds 😴 — Falling asleep together, quietly', url:'https://play.google.com/store/apps/details?id=com.relaxio.sleepo', flirt:'Goodnight, love.' },
+    { type:'gift', text:'Voice Recorder 🎙️ — My voice, anytime you need it', url:'https://play.google.com/store/apps/details?id=com.google.android.apps.recorder', flirt:'Press play when you miss me.' },
+    { type:'gift', text:'Alarmy ⏰ — Waking up knowing you exist', url:'https://play.google.com/store/apps/details?id=droom.sleepIfUCan', flirt:'Good morning, beautiful.' },
+    { type:'gift', text:'Simple Notes 📝 — Writing your name absent-mindedly', url:'https://play.google.com/store/apps/details?id=com.simplemobiletools.notes', flirt:'It’s always you.' }
+];
+
+
 const TEXT = {
     flirts: [
         "تسلم ايدك يا ست البنات", "قمر والله", "ايه الحلاوة دي", "ربنا يخليكي ليا", "نفسي مفتوحة عشانك",
@@ -869,11 +1203,24 @@ const TEXT = {
         '🍿': 'شيبسي', '🍪': 'كوكيز', '🍫': 'شيكولاتة', '🥨': 'باتيه',
         '🍔': 'برجر', '🥪': 'ساندوتش', '🍟': 'بطاطس محمرة', '🍨': 'ايس كريم', 
         '🥤': 'عصير', '🥧': 'فطيرة', '🍵': 'قهوة', '🥛': 'كوب لبن', '🍣': 'سوشي',
-        '🚿': 'دش', '📺': 'تلفزيون', '💤': 'نوم', '💬': 'رغي', '🛏️': 'توضيب', '💋': 'kissing time',
+        '🚿': 'دش', '📺': 'تلفزيون', '💤': 'نوم', '🛏️': 'توضيب', '💋': 'البوس البوس',
         'calm': 'شاي مهدئ', 'freeze': 'تجميد الوقت', 'donut': 'دونت سريعة', 'skip': 'سكيب للمستوى', 
-        'auto_clean': 'غسالة اطباق', 'rat_trap': 'مصيدة فيران', '🎭': 'drama time'
+        'auto_clean': 'غسالة اطباق', 'rat_trap': 'مصيدة فيران', '🎭': 'drama time', '🍕': 'بيتزا'
     }
 };
+
+const SLEEP_PHRASES = [
+  "اوفف اححح", "كنتي مزه","تعالي ابوسك اكتر", "اخخخ اموت انا فالحجات دي "
+];
+
+const SLEEP_BGS = [
+    "linear-gradient(135deg, #1a237e, #4a148c)",
+    "linear-gradient(135deg, #006064, #004d40)",
+    "linear-gradient(135deg, #880e4f, #311b92)",
+    "linear-gradient(135deg, #b71c1c, #0d47a1)",
+    "radial-gradient(circle at 50% 50%, #fce4ec, #f8bbd0)",
+    "radial-gradient(circle at 50% 50%, #e3f2fd, #90caf9)"
+];
 
 const DRAMA_DATA = {
     cold_answers: [
@@ -889,12 +1236,22 @@ const DRAMA_DATA = {
         "*joking*", "*being_sarcastic*", "*teasing*", "*flirting*",
         "*mansplaining*", "*complaining*", "*whining*", "*asking_stupid_question*",
         "*being_clingy*", "*hungry*", "*bored*", "*overreacting*",
-        "*being_dramatic*", "*pouting*", "*acting_cool*", "*forgetting_something*"
+        "*being_dramatic*", "*pouting*", "*acting_cool*", "*forgetting_something*",
+        "*looking_for_trouble*", "*seeking_attention*", "*acting_childish*",
+        "*being_suspicious*", "*fake_crying*", "*acting_tough*", "*moody*",
+        "*needy*", "*overthinking*", "*jealous*", "*confused*", "*sleepy*",
+        "*singing_loudly*", "*dancing_badly*", "*making_mess*", "*stealing_food*",
+        "*pretending_to_work*", "*bragging*", "*telling_bad_jokes*", "*ignoring_chores*"
     ],
     normal_answers: [
         "Aww really?", "That's nice", "I love you", "Tell me more",
         "You're funny", "So sweet", "Of course dear", "Interesting",
-        "Go on", "Wow", "Okay honey", "Sure thing"
+        "Go on", "Wow", "Okay honey", "Sure thing", "Maybe later",
+        "Are you sure?", "I understand", "Don't worry", "Let's see",
+        "Why not?", "Good idea", "Cool", "Whatever you say", "Great!",
+        "OMG", "Really?", "Seriously?", "No way", "Yes please", "Thanks",
+        "Haha", "Cute", "Amazing", "Perfect", "Deal", "Alright", "Sounds fun",
+        "You think so?", "Absolutely", "Definitely", "100%", "Agreed", "True"
     ]
 };
 
@@ -912,13 +1269,14 @@ const FALSE_GIFTS = [
 ];
 
 const INGREDIENTS = {
-    '🍎': { u: 1 }, '🍞': { u: 1 }, '🥩': { u: 1 }, '🥬': { u: 1 },
-    '🥔': { u: 2 }, 
-    '🥭': { u: 3 }, '🍦': { u: 3 }, 
-    '🍓': { u: 4 }, '☕': { u: 4 },
-    '🍿': { u: 5 }, '🍪': { u: 5 }, '🍫': { u: 5 }, '🥨': { u: 5 },
-    '🍚': { u: 6 }
+    '🍎': { u: 1, c: 'fruit' }, '🥬': { u: 1, c: 'fruit' }, '🥔': { u: 2, c: 'fruit' }, '🥭': { u: 3, c: 'fruit' }, '🍓': { u: 4, c: 'fruit' },
+    '🥩': { u: 1, c: 'meat' }, '🐮': { u: 4, c: 'meat' }, '🍦': { u: 3, c: 'meat' }, '🧀': { u: 1, c: 'meat' },
+    '🍞': { u: 1, c: 'pantry' }, '🍿': { u: 5, c: 'pantry' }, '🍪': { u: 5, c: 'pantry' }, '🍫': { u: 5, c: 'pantry' }, 
+    '🥨': { u: 5, c: 'pantry' }, '🍚': { u: 6, c: 'pantry' }, '☕': { u: 4, c: 'pantry' }
 };
+
+const STOCK = {};
+Object.keys(INGREDIENTS).forEach(k => STOCK[k] = 20);
 
 const RECIPES = {
     '🥩': { out: '🍔', s: 'stove', t: 3000 },
@@ -982,33 +1340,247 @@ const CHALLENGES = {
 const CACHE = {};
 function cacheDOM() {
     ['h-lvl','h-cash','ui-lives','ui-xp-left','anger-fill','xp-fill',
-     'dirty-plates','bear-container','the-bear','speech-bubble','orders-container',
+     'dishes-pile','bear-container','the-bear','speech-bubble','orders-container',
      'heba','world','game-over-modal','level-complete-modal','menu-title','menu-grid', 'menu-footer',
-     'generic-menu-modal','jump-heba','jump-bear','happy-val','happy-bar-fill', 'start-info', 'washing-game', 
-     'kissing-game', 'sleep-game', 'shop-tabs', 'inventory-display', 'gift-modal', 'inventory-modal', 'inv-grid',
-     'drama-game', 'drama-chat-view'].forEach(id => CACHE[id] = document.getElementById(id));
+     'generic-menu-modal','happy-val','happy-bar-fill', 'start-info', 'washing-game', 
+     'kissing-game', 'hat-game', 'shop-tabs', 'inventory-display', 'gift-modal', 'inventory-modal', 'inv-grid',
+     'drama-game', 'drama-chat-view', 'supermarket-game', 'pizza-game', 'hangout-game', 'bear-plate-trigger',
+     'calendar-modal', 'beg-modal'].forEach(id => CACHE[id] = document.getElementById(id));
 }
 
-(function initSplashContent() {
-    const bearMsg = document.getElementById('splash-bear-msg');
-    const chickHearts = document.getElementById('splash-chick-hearts');
-    
-    setInterval(() => {
-        const msg = TEXT.flirts[Math.floor(Math.random() * TEXT.flirts.length)];
-        bearMsg.innerText = msg;
-    }, 2500);
-    bearMsg.innerText = TEXT.flirts[0];
+const ThemeSystem = {
+    init() {
+        const hour = new Date().getHours();
+        const splash = document.getElementById('splash-screen');
+        // Day is roughly 6 AM to 6 PM
+        if (hour >= 6 && hour < 18) {
+            splash.classList.add('day-theme');
+            splash.classList.remove('night-theme');
+        } else {
+            splash.classList.add('night-theme');
+            splash.classList.remove('day-theme');
+        }
+    }
+};
 
-    setInterval(() => {
-        const h = document.createElement('div');
-        const hearts = ['❤️', '💖', '💕', '💓', '💗'];
-        h.innerText = hearts[Math.floor(Math.random() * hearts.length)];
-        h.className = 'splash-heart-anim';
-        h.style.left = (Math.random() * 40) + 'px';
-        chickHearts.appendChild(h);
-        setTimeout(() => h.remove(), 1500);
-    }, 500);
-})();
+const StreakSystem = {
+    currentStreak: 0,
+    lastClaimDate: 0,
+    claimHistory: [],
+    beggingTarget: -1,
+    beggingCount: 0,
+    
+    init() {
+        this.currentStreak = parseInt(localStorage.getItem('streak_count') || 0);
+        this.lastClaimDate = parseInt(localStorage.getItem('last_claim_date') || 0);
+        const histRaw = localStorage.getItem('claim_history');
+        this.claimHistory = histRaw ? JSON.parse(histRaw) : Array(30).fill(false);
+
+        const now = Date.now();
+        const oneDay = 86400000;
+        const lastDate = this.lastClaimDate ? new Date(this.lastClaimDate).toDateString() : null;
+        const todayStr = new Date(now).toDateString();
+        
+        if (lastDate !== todayStr && this.lastClaimDate > 0) {
+             const diff = now - this.lastClaimDate;
+             if (diff > oneDay * 2) {
+                 this.currentStreak = 0; 
+             }
+        }
+        
+        if (this.currentStreak >= 50) {
+             this.currentStreak = 0;
+        }
+
+        document.getElementById('splash-streak-val').innerText = this.currentStreak;
+        
+        const bearMsg = document.getElementById('splash-bear-msg');
+        const chickHearts = document.getElementById('splash-chick-hearts');
+        setInterval(() => {
+            const msg = TEXT.flirts[Math.floor(Math.random() * TEXT.flirts.length)];
+            bearMsg.innerText = msg;
+        }, 2500);
+        bearMsg.innerText = TEXT.flirts[0];
+
+        setInterval(() => {
+            const h = document.createElement('div');
+            const hearts = ['❤️', '💖', '💕', '💓', '💗'];
+            h.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+            h.className = 'splash-heart-anim';
+            h.style.left = (Math.random() * 40) + 'px';
+            chickHearts.appendChild(h);
+            setTimeout(() => h.remove(), 1500);
+        }, 500);
+        
+        if (lastDate !== todayStr && !this.claimHistory[this.currentStreak]) {
+             document.getElementById('daily-gift-btn').classList.add('gift-bounce');
+        }
+    },
+
+    openCalendar() {
+        Game.playSound('modal');
+        const modal = document.getElementById('calendar-modal');
+        const grid = document.getElementById('cal-grid');
+        grid.innerHTML = '';
+        
+        const now = Date.now();
+        const lastDate = this.lastClaimDate ? new Date(this.lastClaimDate).toDateString() : null;
+        const todayStr = new Date(now).toDateString();
+        const canClaim = lastDate !== todayStr;
+
+        for(let i=0; i<50; i++) {
+            const dayNum = i + 1;
+            const el = document.createElement('div');
+            el.className = 'cal-day';
+            
+            let state = '';
+            let icon = '';
+            
+            if (this.claimHistory[i]) {
+                state = 'claimed';
+                icon = '✅';
+                el.onclick = () => this.reOpen(i);
+            } else if (i === this.currentStreak && canClaim) {
+                state = 'today';
+                icon = '🎁';
+                el.onclick = () => this.claimDay(i);
+            } else {
+                state = 'locked';
+                icon = '🔒';
+                el.onclick = () => this.startBegging(i);
+            }
+            
+            el.classList.add(state);
+            el.innerHTML = `<span class="cal-num">${dayNum}</span><div class="cal-icon">${icon}</div>`;
+            grid.appendChild(el);
+        }
+        
+        modal.style.display = 'flex';
+    },
+
+    claimDay(index) {
+        Game.playSound('pop');
+        this.currentStreak++;
+        this.lastClaimDate = Date.now();
+        this.claimHistory[index] = true;
+        
+        this.persist();
+        document.getElementById('splash-streak-val').innerText = this.currentStreak;
+        document.getElementById('calendar-modal').style.display = 'none';
+        
+        this.showReveal(index);
+    },
+
+    reOpen(index) {
+        Game.playSound('click');
+        const gift = STREAK_DB[index % STREAK_DB.length];
+        const modal = document.getElementById('gift-reveal-overlay');
+        modal.style.display = 'flex';
+        document.getElementById('daily-gift-anim').innerText = '🎁';
+        document.getElementById('daily-gift-msg').innerText = "Already Opened!";
+        
+        setTimeout(() => {
+             document.getElementById('daily-gift-anim').innerText = '🎉';
+             document.getElementById('daily-gift-msg').innerText = gift.text;
+             const content = document.getElementById('daily-gift-content');
+             if (gift.url) {
+                 content.innerHTML = `<a href="${gift.url}" target="_blank" class="gift-content-link">Open Gift Link 🔗</a>`;
+             } else {
+                 content.innerHTML = '';
+             }
+             document.getElementById('daily-gift-close').style.display = 'block';
+        }, 500);
+    },
+
+    startBegging(index) {
+        Game.playSound('sad');
+        this.beggingTarget = index;
+        this.beggingCount = 0;
+        
+        const modal = document.getElementById('beg-modal');
+        document.getElementById('beg-count').innerText = "0 / 10";
+        document.getElementById('beg-input').value = "";
+        modal.style.display = 'flex';
+    },
+
+    checkBegInput() {
+        const inp = document.getElementById('beg-input');
+        const val = inp.value.trim();
+        
+        if (val === "i love you baba") {
+            Game.playSound('pop');
+            this.beggingCount++;
+            document.getElementById('beg-count').innerText = this.beggingCount + " / 10";
+            inp.value = "";
+            
+            if (this.beggingCount >= 10) {
+                Game.playSound('success');
+                this.claimHistory[this.beggingTarget] = true;
+                this.persist();
+                
+                document.getElementById('beg-modal').style.display = 'none';
+                document.getElementById('calendar-modal').style.display = 'none';
+                this.showReveal(this.beggingTarget);
+            }
+        } else {
+            Game.playSound('sad');
+            inp.style.border = "3px solid red";
+            setTimeout(() => inp.style.border = "3px solid #000", 500);
+        }
+    },
+
+    persist() {
+        localStorage.setItem('streak_count', this.currentStreak);
+        localStorage.setItem('last_claim_date', this.lastClaimDate);
+        localStorage.setItem('claim_history', JSON.stringify(this.claimHistory));
+    },
+
+    showReveal(index) {
+        const gift = STREAK_DB[index % STREAK_DB.length];
+        const overlay = document.getElementById('gift-reveal-overlay');
+        const animBox = document.getElementById('daily-gift-anim');
+        const msg = document.getElementById('daily-gift-msg');
+        const content = document.getElementById('daily-gift-content');
+        const close = document.getElementById('daily-gift-close');
+        
+        overlay.style.display = 'flex';
+        animBox.style.display = 'block';
+        animBox.innerText = '🎁';
+        msg.innerText = "Tap to Open!";
+        content.innerHTML = '';
+        close.style.display = 'none';
+        
+        animBox.onclick = () => {
+             animBox.onclick = null;
+             Game.playSound('success');
+             confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, zIndex: 7000 });
+             animBox.innerText = '🎉';
+             msg.innerText = gift.text;
+             
+             if (gift.url) {
+                 content.innerHTML = `<a href="${gift.url}" target="_blank" class="gift-content-link">Open Gift Link 🔗</a>`;
+             }
+             
+             close.style.display = 'block';
+        };
+    },
+
+    closeReveal() {
+        document.getElementById('gift-reveal-overlay').style.display = 'none';
+        document.getElementById('daily-gift-btn').classList.remove('gift-bounce');
+        Game.playSound('click');
+    },
+
+    shareToTelegram() {
+        const score = localStorage.getItem('heba_cash') || Game.cash || 0;
+        const streak = this.currentStreak;
+        const level = localStorage.getItem('heba_level') || 1;
+        
+        const text = `Score: ${Math.floor(score)} | Streak: ${streak} Days | Level: ${level}`;
+        const msg = `Check out my ChickMania stats! %0A${text}%0A@skmadk`;
+        window.open(`https://t.me/share/url?url=https://t.me/skmadk&text=${msg}`, '_blank');
+    }
+};
 
 const Game = {
     active: false, mode: 'normal', level: 1, cash: 100, 
@@ -1016,17 +1588,22 @@ const Game = {
     lives: 4, xp: 0, xpTarget: 100,
     levelTimer: 0, lastTime: 0,
     modifiers: {}, hackerClicks: 0, activeShopCat: 'kitchen',
-    activeChallenge: null, inventory: [],
+    activeChallenge: null, inventory: [], activeFridgeCat: 'fruit',
     isProcessingLevel: false,
+    splashClicked: false,
     
     initSplash() {
-        document.getElementById('splash-screen').style.opacity = '0';
+        if (this.splashClicked) return;
+        this.splashClicked = true;
+        const splash = document.getElementById('splash-screen');
+        splash.style.pointerEvents = 'none';
+        splash.style.opacity = '0';
         this.playSound('click');
         const aud = document.getElementById('bg-music');
         aud.volume = 0.3;
         aud.play().catch(e => console.log('Audio blocked'));
         setTimeout(() => {
-            document.getElementById('splash-screen').style.display = 'none';
+            splash.style.display = 'none';
             document.getElementById('start-modal').style.display = 'flex';
         }, 500);
     },
@@ -1042,18 +1619,30 @@ const Game = {
     start() {
         cacheDOM();
         this.playSound('click');
-        const savedLvl = localStorage.getItem('heba_level');
-        this.level = savedLvl ? parseInt(savedLvl) : 1;
+        
+        let savedLvl = 1;
+        try {
+            const raw = localStorage.getItem('heba_save_v1');
+            if (raw) {
+                const data = JSON.parse(raw);
+                if (data && data.l && !isNaN(data.l)) savedLvl = parseInt(data.l);
+                if (data && data.c && !isNaN(data.c)) this.cash = parseInt(data.c);
+                if (data && data.s) Object.assign(STOCK, data.s);
+            } else {
+                const oldLvl = localStorage.getItem('heba_level');
+                if(oldLvl) savedLvl = parseInt(oldLvl);
+            }
+        } catch (e) {
+            console.error("Save Corrupted", e);
+            localStorage.removeItem('heba_save_v1');
+        }
+
+        this.level = savedLvl;
         document.getElementById('start-modal').style.display = 'none';
+        
+        this.xp = 0;
+        
         this.startLevel(this.level);
-        
-        const savedCash = localStorage.getItem('heba_cash');
-        if(savedCash) this.cash = parseInt(savedCash);
-        const savedXp = localStorage.getItem('heba_xp');
-        if(savedXp) this.xp = parseInt(savedXp);
-        const savedAnger = localStorage.getItem('heba_anger');
-        if(savedAnger) Bear.anger = parseInt(savedAnger);
-        
         this.updateHUD();
         Bear.updateStats();
         
@@ -1067,10 +1656,15 @@ const Game = {
         
         this.lives = 4;
         this.xp = 0;
-        this.xpTarget = 100 + (lvl * 20);
+        this.xpTarget = 50 + (lvl * 15);
         
         this.platesServed = 0;
         this.dirtyPlates = 0;
+
+        Object.keys(INGREDIENTS).forEach(k => {
+            if(!STOCK[k]) STOCK[k] = 0;
+            if(STOCK[k] < 5) STOCK[k] = 5;
+        });
         
         this.activeChallenge = CHALLENGES[lvl] || null;
         if(this.activeChallenge) {
@@ -1093,6 +1687,7 @@ const Game = {
         this.applyVisuals();
         this.closeModals();
         Bear.startLogic();
+        this.saveSettings();
     },
 
     nextLevel() {
@@ -1101,7 +1696,8 @@ const Game = {
         
         this.playSound('click');
         const next = this.level + 1;
-        localStorage.setItem('heba_level', next);
+        this.level = next;
+        this.saveSettings();
         
         document.getElementById('gift-modal').style.display = 'none';
         
@@ -1121,7 +1717,7 @@ const Game = {
         s('icecream', this.level >= 3);
         s('coffee-machine', this.level >= 4);
         s('cow-station', this.level >= 5);
-        s('snacks-area', this.level >= 5);
+        s('pizza-oven', this.level > 5);
         s('sushi-maker', this.level >= 6);
         s('stove2', this.level >= 15);
         s('prep2', this.level >= 20);
@@ -1155,8 +1751,14 @@ const Game = {
         CACHE['h-cash'].innerText = Math.floor(this.cash);
         CACHE['ui-lives'].innerText = "💛".repeat(this.lives);
         CACHE['ui-xp-left'].innerText = Math.max(0, this.xpTarget - this.xp);
-        CACHE['dirty-plates'].innerText = this.dirtyPlates;
-        CACHE['dirty-plates'].style.display = this.dirtyPlates > 0 ? 'flex' : 'none';
+        
+        // Also update Splash Score display in realtime
+        document.getElementById('splash-score-val').innerText = Math.floor(this.cash);
+        
+        CACHE['dishes-pile'].style.display = this.dirtyPlates > 0 ? 'flex' : 'none';
+        
+        const plateTrig = document.getElementById('bear-plate-trigger');
+        if(plateTrig) plateTrig.style.display = (this.dirtyPlates > 0) ? 'block' : 'none';
         
         const xpPct = Math.min(100, (this.xp / this.xpTarget) * 100);
         CACHE['xp-fill'].style.width = xpPct + '%';
@@ -1165,6 +1767,7 @@ const Game = {
     winLevel() {
         this.active = false;
         this.playSound('success');
+        this.saveSettings();
         
         var duration = 3000;
         var end = Date.now() + duration;
@@ -1280,6 +1883,7 @@ const Game = {
             }
             this.updateHUD();
             this.renderShop();
+            this.saveSettings();
         }
     },
 
@@ -1347,7 +1951,7 @@ const Game = {
         const val = document.getElementById('hack-lvl-sel').value;
         this.closeModals();
         this.startLevel(parseInt(val));
-        localStorage.setItem('heba_level', val);
+        this.saveSettings();
     },
 
     setHackCash() {
@@ -1355,7 +1959,7 @@ const Game = {
         if(val) {
             this.cash = parseInt(val);
             this.updateHUD();
-            localStorage.setItem('heba_cash', this.cash);
+            this.saveSettings();
         }
     },
 
@@ -1364,7 +1968,6 @@ const Game = {
         if(val) { 
             this.xp = parseInt(val); 
             this.updateHUD(); 
-            localStorage.setItem('heba_xp', this.xp);
         }
     },
 
@@ -1373,7 +1976,6 @@ const Game = {
         if(val) { 
             Bear.anger = parseInt(val); 
             Bear.updateStats(); 
-            localStorage.setItem('heba_anger', Bear.anger);
         }
     },
     
@@ -1383,11 +1985,15 @@ const Game = {
     },
 
     saveSettings() {
+        const data = {
+            l: this.level,
+            c: this.cash,
+            s: STOCK,
+            ts: Date.now()
+        };
+        localStorage.setItem('heba_save_v1', JSON.stringify(data));
         localStorage.setItem('heba_level', this.level);
         localStorage.setItem('heba_cash', this.cash);
-        localStorage.setItem('heba_xp', this.xp);
-        sessionStorage.setItem('heba_cache', JSON.stringify({l: this.level, c: this.cash, x: this.xp}));
-        alert('Saved!');
     },
 
     resetEverything() {
@@ -1407,6 +2013,7 @@ const Game = {
     addCash(amt) {
         this.cash += amt;
         this.updateHUD();
+        this.saveSettings();
     },
 
     unlockAll() {
@@ -1430,11 +2037,14 @@ const Game = {
     closeModals() {
         this.playSound('modal');
         document.querySelectorAll('.modal-overlay').forEach(e => e.style.display = 'none');
-        document.getElementById('sleep-game').style.display = 'none';
+        document.getElementById('hat-game').style.display = 'none';
         document.getElementById('washing-game').style.display = 'none';
         document.getElementById('kissing-game').style.display = 'none';
         document.getElementById('drama-game').style.display = 'none';
+        document.getElementById('supermarket-game').style.display = 'none';
+        document.getElementById('pizza-game').style.display = 'none';
         document.getElementById('gift-modal').style.display = 'none';
+        document.getElementById('hangout-game').style.display = 'none';
         document.getElementById('generic-menu-modal').classList.remove('frost-theme');
         Game.mode = 'normal';
     },
@@ -1442,6 +2052,13 @@ const Game = {
     loop(t) {
         if(!this.active) {
             if(document.getElementById('hacker-modal').style.display === 'flex') this.hackerUpdate();
+            if(Supermarket.active) {
+                Supermarket.update((t - this.lastTime) / 1000);
+            }
+            if(HangoutMode.active) {
+                HangoutMode.update((t - this.lastTime) / 1000);
+            }
+            this.lastTime = t;
             return requestAnimationFrame(k => this.loop(k));
         }
         const dt = (t - this.lastTime) / 1000;
@@ -1459,8 +2076,8 @@ const Game = {
 
             if(this.xp >= this.xpTarget) return this.winLevel();
             this.updateHUD();
-        } else if(this.mode === 'sleep') {
-            SleepGame.update(dt);
+        } else if(this.mode === 'hat') {
+            HatGame.update(dt);
         }
         
         if(document.getElementById('hacker-modal').style.display === 'flex') this.hackerUpdate();
@@ -1521,7 +2138,7 @@ const Bear = {
             let maxOrders = 1 + Math.floor(Game.level / 5);
             if(maxOrders > 6) maxOrders = 6;
             if(this.orders.length < maxOrders) this.addOrder();
-            this.nextOrderTimer = Math.max(2, 10 - orderSpeed);
+            this.nextOrderTimer = Math.max(2, 18 - orderSpeed);
         }
 
         if(Game.modifiers['rat_trap'] && World.rats.length > 0) {
@@ -1575,25 +2192,30 @@ const Bear = {
             item = RECIPES[raw] ? (Math.random() > 0.3 ? RECIPES[raw].out : raw) : raw;
         } else if (reqType === 'quality_time') {
             type = 'quality';
-            const opts = ['🚿','📺','💤','💬','🛏️', '🎭'];
+            const opts = ['🚿','📺','💤','🛏️', '🎭', '🚗'];
             item = opts[Math.floor(Math.random()*opts.length)];
         } else if (reqType === 'kisses') {
             type = 'quality';
             item = '💋';
         } else {
-            if(Math.random() < 0.3) type = 'quality';
+            if(Math.random() < 0.45) type = 'quality';
             
-            if(type === 'food') {
+            if(Game.level > 5 && Math.random() < 0.2) {
+                type = 'pizza';
+                item = '🍕';
+            } else if(type === 'food') {
                 const unlocked = Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].u <= Game.level);
                 const raw = unlocked[Math.floor(Math.random()*unlocked.length)];
                 item = RECIPES[raw] ? (Math.random() > 0.3 ? RECIPES[raw].out : raw) : raw;
             } else {
-                const opts = ['🚿','📺','💤','💬','🛏️', '💋', '🎭'];
+                const opts = ['🚿','📺','💤','🛏️', '💋', '🎭', '🚗']; 
                 item = opts[Math.floor(Math.random()*opts.length)];
             }
         }
 
-        const order = { id, item, type, timer: 0, maxTime: Math.max(8, 20 - (Game.level * 0.2)) };
+        const order = { id, item, type, timer: 0, maxTime: Math.max(15, 30 - (Game.level * 0.2)) };
+        if(type === 'pizza') order.maxTime = 50; 
+
         this.orders.push(order);
         
         const div = document.createElement('div');
@@ -1603,7 +2225,8 @@ const Bear = {
         
         Game.playSound('pop');
 
-        this.say(type === 'food' ? "هم هم هم 😋" : "عايز اهتمام! ❤️");
+        if(type === 'pizza') this.say("عايز بيتزا يا شيف! 🍕");
+        else this.say(type === 'food' ? "هم هم هم 😋" : "عايز اهتمام! ❤️");
     },
 
     completeOrder(idx) {
@@ -1615,15 +2238,16 @@ const Bear = {
         this.anger = Math.max(0, this.anger - 15);
         
         let cash = 15;
+        if(o.type === 'pizza') cash = 50; 
         if(Game.modifiers['double_cash']) cash *= 1.5;
         if(Game.activeChallenge && Game.activeChallenge.tips) cash *= Game.activeChallenge.tips;
         
         Game.cash += cash;
         Game.xp += 15;
         
-        if(o.type === 'food') {
+        if(o.type === 'food' || o.type === 'pizza') {
             Game.platesServed++;
-            Game.dirtyPlates++;
+            if(o.type === 'food') Game.dirtyPlates++;
             this.strength = Math.min(100, this.strength + 10);
             this.spawnHeart();
         }
@@ -1699,7 +2323,18 @@ const Player = {
     },
     updateInv() {
         const i = document.getElementById('inventory-display');
-        i.innerHTML = this.holding.map(x => `<span class="inv-item-bubble">${x}</span>`).join('');
+        i.innerHTML = this.holding.map((x, idx) => `
+            <div class="inv-item-bubble">
+                ${x}
+                <div class="inv-close-btn" onclick="event.stopPropagation(); Player.drop(${idx})">x</div>
+            </div>
+        `).join('');
+    },
+    drop(idx) {
+        if(idx >= 0 && idx < this.holding.length) {
+            this.holding.splice(idx, 1);
+            this.updateInv();
+        }
     }
 };
 
@@ -1716,33 +2351,42 @@ const Interact = {
     
     act(id) {
         const P = Player;
-        const qualityMap = { 'tv': '📺', 'shower': '🚿', 'bed': '💤', 'chair': '💬' };
+        const qualityMap = { 'tv': '📺', 'shower': '🚿', 'bed': '💤' };
         
         let foundOrder = Bear.orders.find(o => o.item === qualityMap[id]);
         if(!foundOrder && id === 'bed') {
              foundOrder = Bear.orders.find(o => o.item === '🛏️');
         }
+        
+        if (id === 'bed') {
+             Game.mode = 'hat';
+             document.getElementById('hat-game').style.display = 'flex';
+             HatGame.start(foundOrder ? foundOrder.id : -1);
+             return;
+        } else if (foundOrder) {
+             if(id === 'shower') Game.playSound('water');
+             if(id === 'tv') Game.playSound('tv');
+             const el = document.getElementById(id);
+             const rect = el.getBoundingClientRect();
+             const w = CACHE['world'].getBoundingClientRect();
+             Bear.move(((rect.left-w.left)/w.width)*100, ((rect.top-w.top)/w.height)*100);
+             
+             this.prog(id, 4000, () => {
+                 const idx = Bear.orders.indexOf(foundOrder);
+                 if(idx > -1) {
+                    Bear.completeOrder(idx);
+                    Bear.reset();
+                 }
+             });
+             return;
+        }
 
-        if (foundOrder) {
-            if (id === 'bed') {
-                 Game.mode = 'sleep';
-                 document.getElementById('sleep-game').style.display = 'flex';
-                 SleepGame.start(foundOrder.id);
+        if(id === 'pizza-oven') {
+            const pizzaOrd = Bear.orders.find(o => o.type === 'pizza');
+            if(pizzaOrd) {
+                PizzaGame.start(pizzaOrd.id);
             } else {
-                 if(id === 'shower') Game.playSound('water');
-                 if(id === 'tv') Game.playSound('tv');
-                 const el = document.getElementById(id);
-                 const rect = el.getBoundingClientRect();
-                 const w = CACHE['world'].getBoundingClientRect();
-                 Bear.move(((rect.left-w.left)/w.width)*100, ((rect.top-w.top)/w.height)*100);
-                 
-                 this.prog(id, 4000, () => {
-                     const idx = Bear.orders.indexOf(foundOrder);
-                     if(idx > -1) {
-                        Bear.completeOrder(idx);
-                        Bear.reset();
-                     }
-                 });
+                Bear.say("مش عايز بيتزا دلوقتي 🍕");
             }
             return;
         }
@@ -1751,9 +2395,16 @@ const Interact = {
             Game.playSound('ice');
             const m = document.getElementById('generic-menu-modal');
             m.classList.add('frost-theme');
-            this.showMenu(Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].u <= Game.level), "التلاجة ❄️");
-        } else if(id === 'snacks-area') {
-            this.showMenu(['🍿','🍪','🍫','🥨'], "تسالي 🥨");
+            this.showFridgeMenu('fruit');
+        } else if(id === 'hangout-door') {
+            const hoIdx = Bear.orders.findIndex(o => o.item === '🚗');
+            if (hoIdx > -1) {
+                HangoutMode.start(Bear.orders[hoIdx].id);
+            } else {
+                Bear.say("مش عايز اخرج دلوقتي 🏠");
+            }
+        } else if(id === 'dishes-pile') {
+            WashingGame.start();
         } else if(id === 'sink') {
             WashingGame.start();
         } else if(id === 'cow-station') {
@@ -1786,20 +2437,46 @@ const Interact = {
             Player.updateInv();
         }
     },
-
-    showMenu(items, title) {
+    
+    showFridgeMenu(cat) {
+        Game.activeFridgeCat = cat;
         Game.playSound('modal');
-        CACHE['menu-title'].innerText = title;
-        CACHE['shop-tabs'].style.display = 'none';
-        CACHE['menu-grid'].innerHTML = items.map(i => `<button class="menu-btn" onclick="Interact.pick('${i}')">${i}</button>`).join('');
-        CACHE['menu-footer'].innerHTML = '';
+        CACHE['menu-title'].innerText = "التلاجة ❄️";
+        CACHE['shop-tabs'].style.display = 'flex';
+        CACHE['shop-tabs'].innerHTML = `
+            <div class="tab-btn ${cat=='fruit'?'active':''}" onclick="Interact.showFridgeMenu('fruit')">خضار</div>
+            <div class="tab-btn ${cat=='meat'?'active':''}" onclick="Interact.showFridgeMenu('meat')">لحوم</div>
+            <div class="tab-btn ${cat=='pantry'?'active':''}" onclick="Interact.showFridgeMenu('pantry')">بقالة</div>
+        `;
+        
+        const items = Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].c === cat && INGREDIENTS[k].u <= Game.level);
+        
+        let html = items.map(i => {
+            const count = STOCK[i] || 0;
+            const disabled = count <= 0;
+            return `<button class="menu-btn" style="${disabled?'opacity:0.5;':''}" onclick="${disabled?'':'Interact.pick(\''+i+'\')'}">
+                ${i} <span style="font-size:12px">x${count}</span>
+            </button>`
+        }).join('');
+        
+        CACHE['menu-grid'].innerHTML = html;
+        
+        CACHE['menu-footer'].innerHTML = `
+            <button class="neo-btn" style="width:100%; background:var(--neo-pink); color:white; font-size:24px;" onclick="Supermarket.open()">
+            🐻 🛒 السوبر ماركت
+            </button>
+        `;
+        
         CACHE['generic-menu-modal'].style.display = 'flex';
     },
 
     pick(i) {
-        Game.playSound('pop');
-        this.addToInv(i);
-        Game.closeModals();
+        if(STOCK[i] > 0) {
+            Game.playSound('pop');
+            STOCK[i]--;
+            this.addToInv(i);
+            Game.closeModals();
+        }
     },
 
     prog(id, t, cb) {
@@ -1854,7 +2531,6 @@ const Interact = {
         const r = CACHE['bear-container'].getBoundingClientRect();
         const w = CACHE['world'].getBoundingClientRect();
         Player.goto(((r.left-w.left)/w.width)*100, ((r.top-w.top)/w.height)*100, () => {
-            // Check for Drama Order
             const dramaIdx = Bear.orders.findIndex(o => o.item === '🎭');
             if (dramaIdx > -1) {
                 DramaGame.start(dramaIdx);
@@ -1876,21 +2552,6 @@ const Interact = {
             const orders = [...Bear.orders];
             let actionDone = false;
             
-            for(let i=0; i<orders.length; i++) {
-                const o = orders[i];
-                if(o.type !== 'food') {
-                    if(o.item === '💬') {
-                        const el = document.getElementById('chair');
-                        const rect = el.getBoundingClientRect();
-                        Bear.move(((rect.left-w.left)/w.width)*100, ((rect.top-w.top)/w.height)*100);
-                        Interact.prog('chair', 4000, () => {
-                             Bear.completeOrder(i);
-                             Bear.reset();
-                        });
-                        actionDone = true; break;
-                    }
-                }
-            }
             if(actionDone) return;
 
             if(Game.dirtyPlates >= Game.maxPlates) return Bear.say("مفيش اطباق نضيفة! 🍽️");
@@ -1921,6 +2582,291 @@ const Interact = {
     }
 };
 
+const Supermarket = {
+    active: false,
+    cart: [],
+    bearX: 50, bearY: 80,
+    targetX: 50, targetY: 80,
+    zones: [
+        { id: 'produce', x: 10, y: 10, w: 30, h: 30, label: 'Fruits & Veg', items: ['🍎','🥬','🥔','🥭','🍓'] },
+        { id: 'meat', x: 60, y: 10, w: 30, h: 30, label: 'Meat & Dairy', items: ['🥩','🐮','🧀','🍦'] },
+        { id: 'pantry', x: 10, y: 60, w: 30, h: 30, label: 'Pantry', items: ['🍞','🍚','☕','🍿','🍫','🍪','🥨'] }
+    ],
+    
+    open() {
+        Game.active = false;
+        Game.closeModals();
+        this.active = true;
+        this.cart = [];
+        this.bearX = 50; this.bearY = 80; this.targetX = 50; this.targetY = 80;
+        document.getElementById('supermarket-game').style.display = 'block';
+        this.renderZones();
+        this.updateCart();
+        this.updateBearPos();
+    },
+    
+    renderZones() {
+        const con = document.getElementById('market-zones-container');
+        con.innerHTML = '';
+        this.zones.forEach(z => {
+            const el = document.createElement('div');
+            el.className = 'market-zone';
+            el.style.left = z.x + '%'; el.style.top = z.y + '%';
+            el.style.width = z.w + '%'; el.style.height = z.h + '%';
+            
+            const lbl = document.createElement('div');
+            lbl.className = 'market-label'; lbl.innerText = z.label;
+            el.appendChild(lbl);
+            
+            z.items.forEach(item => {
+                const iNode = document.createElement('div');
+                iNode.className = 'market-item-node';
+                iNode.innerText = item;
+                iNode.onclick = (e) => {
+                    e.stopPropagation();
+                    this.setTargetToItem(z.x + (z.w/2), z.y + (z.h/2), item);
+                };
+                el.appendChild(iNode);
+            });
+            con.appendChild(el);
+        });
+    },
+
+    click(e) {
+        const rect = document.getElementById('supermarket-game').getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        this.targetX = x; this.targetY = y;
+    },
+
+    setTargetToItem(tx, ty, item) {
+        this.targetX = tx; this.targetY = ty;
+        this.pendingItem = item;
+    },
+
+    update(dt) {
+        const dx = this.targetX - this.bearX;
+        const dy = this.targetY - this.bearY;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        
+        if (dist > 1) {
+            const speed = 20 * dt;
+            this.bearX += (dx / dist) * speed;
+            this.bearY += (dy / dist) * speed;
+            this.updateBearPos();
+        } else if (this.pendingItem) {
+            this.buy(this.pendingItem);
+            this.pendingItem = null;
+        }
+    },
+
+    updateBearPos() {
+        const b = document.getElementById('market-bear-player');
+        b.style.left = `calc(${this.bearX}% - 30px)`;
+        b.style.top = `calc(${this.bearY}% - 30px)`;
+        if (this.targetX > this.bearX) b.style.transform = "scaleX(-1)";
+        else b.style.transform = "scaleX(1)";
+    },
+    
+    buy(item) {
+        if(Game.cash >= 20) {
+            Game.cash -= 20;
+            this.cart.push(item);
+            Game.playSound('kaching');
+            this.updateCart();
+            
+            const float = document.createElement('div');
+            float.innerText = `+1 ${item}`;
+            float.style.position = 'absolute';
+            float.style.left = this.bearX + '%'; float.style.top = (this.bearY - 10) + '%';
+            float.style.fontWeight = 'bold'; float.style.color = 'green';
+            float.style.animation = 'floatUp 1s forwards';
+            document.getElementById('supermarket-game').appendChild(float);
+            setTimeout(()=>float.remove(), 1000);
+        } else {
+             const float = document.createElement('div');
+             float.innerText = "No Money!";
+             float.style.position = 'absolute';
+             float.style.left = this.bearX + '%'; float.style.top = (this.bearY - 10) + '%';
+             float.style.fontWeight = 'bold'; float.style.color = 'red';
+             float.style.animation = 'floatUp 1s forwards';
+             document.getElementById('supermarket-game').appendChild(float);
+             setTimeout(()=>float.remove(), 1000);
+        }
+    },
+    
+    updateCart() {
+        document.getElementById('cart-count').innerText = this.cart.length;
+    },
+    
+    close() {
+        document.getElementById('supermarket-game').style.display = 'none';
+        this.active = false;
+        
+        this.cart.forEach(i => {
+            STOCK[i] = (STOCK[i] || 0) + 1;
+        });
+        
+        Game.active = true;
+        Bear.say("مقصرتش معاكي أهوه..ظبطينا بقي");
+        requestAnimationFrame(t => {
+            Game.lastTime = t;
+            Game.loop(t);
+        });
+        Game.saveSettings();
+    }
+};
+
+const PizzaGame = {
+    orderId: -1,
+    required: {},
+    placed: {},
+    timer: 0,
+    interval: null,
+    
+    start(oid) {
+        Game.active = false;
+        this.orderId = oid;
+        this.placed = {};
+        this.timer = 20 + (Game.level * 0.5);
+        
+        const possible = ['🧀', '🍅', '🍄', '🥩', '🫑']; 
+        
+        this.required = {};
+        const count = 3 + Math.floor(Math.random() * 3);
+        for(let i=0; i<count; i++) {
+            const k = possible[Math.floor(Math.random()*possible.length)];
+            this.required[k] = (this.required[k] || 0) + 1;
+        }
+        
+        document.getElementById('pizza-game').style.display = 'flex';
+        this.render();
+        this.startTimer();
+    },
+
+    startTimer() {
+        if(this.interval) clearInterval(this.interval);
+        const maxTime = this.timer;
+        this.interval = setInterval(() => {
+            this.timer -= 0.1;
+            const pct = (this.timer / maxTime) * 100;
+            document.getElementById('pizza-timer-fill').style.width = pct + '%';
+            if(this.timer <= 0) {
+                this.timer = 0;
+                clearInterval(this.interval);
+                this.serve(true);
+            }
+        }, 100);
+    },
+    
+    render() {
+        const ticket = document.getElementById('pizza-order-ticket');
+        ticket.innerHTML = "<b>ORDER:</b><br>" + Object.keys(this.required).map(k => `${this.required[k]}x ${k}`).join('<br>');
+        
+        document.getElementById('pizza-plate').innerHTML = '<div id="pizza-base">🍕</div>';
+        
+        const row = document.getElementById('pizza-ingredients-row');
+        row.innerHTML = '';
+        const possible = ['🧀', '🍅', '🍄', '🥩', '🫑'];
+        
+        possible.forEach(p => {
+            const el = document.createElement('div');
+            el.className = 'pizza-ing';
+            el.innerText = p;
+            
+            el.addEventListener('touchstart', (e) => this.dragStart(e, p));
+            el.addEventListener('mousedown', (e) => this.dragStart(e, p));
+            
+            row.appendChild(el);
+        });
+    },
+    
+    dragStart(e, item) {
+        e.preventDefault();
+        const touch = e.touches ? e.touches[0] : e;
+        
+        const ghost = document.createElement('div');
+        ghost.innerText = item;
+        ghost.style.position = 'fixed';
+        ghost.style.fontSize = '40px';
+        ghost.style.pointerEvents = 'none';
+        ghost.style.zIndex = '6000';
+        ghost.id = 'pizza-ghost';
+        document.body.appendChild(ghost);
+        
+        const move = (ev) => {
+            const t = ev.touches ? ev.touches[0] : ev;
+            ghost.style.left = t.clientX + 'px';
+            ghost.style.top = t.clientY + 'px';
+        };
+        
+        const end = (ev) => {
+            const t = ev.changedTouches ? ev.changedTouches[0] : ev;
+            const plate = document.getElementById('pizza-plate').getBoundingClientRect();
+            
+            if (t.clientX >= plate.left && t.clientX <= plate.right && 
+                t.clientY >= plate.top && t.clientY <= plate.bottom) {
+                this.addIngredient(item);
+            }
+            
+            ghost.remove();
+            document.removeEventListener('mousemove', move);
+            document.removeEventListener('mouseup', end);
+            document.removeEventListener('touchmove', move);
+            document.removeEventListener('touchend', end);
+        };
+        
+        document.addEventListener('mousemove', move);
+        document.addEventListener('mouseup', end);
+        document.addEventListener('touchmove', move);
+        document.addEventListener('touchend', end);
+        
+        move(e);
+    },
+    
+    addIngredient(item) {
+        Game.playSound('pop');
+        this.placed[item] = (this.placed[item] || 0) + 1;
+        
+        const vis = document.createElement('div');
+        vis.className = 'on-pizza';
+        vis.innerText = item;
+        vis.style.left = (Math.random() * 140 + 10) + 'px';
+        vis.style.top = (Math.random() * 140 + 10) + 'px';
+        document.getElementById('pizza-plate').appendChild(vis);
+    },
+    
+    serve(forcedFail = false) {
+        if(this.interval) clearInterval(this.interval);
+        
+        let correct = true;
+        for(let k in this.required) {
+            if((this.placed[k] || 0) !== this.required[k]) correct = false;
+        }
+        for(let k in this.placed) {
+            if(!this.required[k]) correct = false; 
+        }
+        if(forcedFail) correct = false;
+        
+        document.getElementById('pizza-game').style.display = 'none';
+        Game.active = true;
+        Game.mode = 'normal';
+        requestAnimationFrame(t => { Game.lastTime = t; Game.loop(t); });
+
+        const idx = Bear.orders.findIndex(x => x.id === this.orderId);
+        
+        if(correct) {
+            if(idx > -1) Bear.completeOrder(idx);
+            Bear.say("يا سيدي ع البيتزا! 🍕❤️");
+        } else {
+            Game.lives--;
+            Bear.say("بيتزا محروقة! 🤢");
+            Game.updateHUD();
+            if(Game.lives <= 0) Game.gameOver();
+        }
+    }
+};
+
 const World = {
     rats: [], dirt: [],
     reset() { 
@@ -1933,11 +2879,9 @@ const World = {
         this.rats = this.rats.filter(x => x !== r);
     },
     update(dt) {
-        let ratChance = (0.0005 * Game.level) / 2;
-        if(Game.activeChallenge && Game.activeChallenge.ratRate) ratChance *= Game.activeChallenge.ratRate;
-        if(Game.activeChallenge && Game.activeChallenge.allHard) ratChance *= 2;
+        let ratChance = 0.0002;
 
-        if(this.rats.length < 3 && Math.random() < ratChance) {
+        if(this.rats.length < 2 && Math.random() < ratChance) {
             const r = document.createElement('div');
             r.className = 'rat'; r.innerText = '🐀';
             r.style.left = (Math.random()*90 + 5) + '%';
@@ -1945,7 +2889,6 @@ const World = {
             r.onclick = (e) => {
                 e.stopPropagation();
                 
-                // Shooting Effect
                 Game.playSound('shoot');
                 const p = document.getElementById('player-sprite');
                 const old = p.innerText;
@@ -1961,13 +2904,10 @@ const World = {
             setTimeout(() => { r.style.top = (Math.random()*80 + 10) + '%'; }, 100);
         }
         
-        let dirtChance = (0.002 * Game.level) / 2;
-        if(Game.activeChallenge && Game.activeChallenge.dirtRate) dirtChance *= Game.activeChallenge.dirtRate;
-        if(Game.activeChallenge && Game.activeChallenge.allHard) dirtChance *= 2;
+        let dirtChance = 0.0003;
 
-        if(this.dirt.length < 5 && Math.random() < dirtChance) {
+        if(this.dirt.length < 3 && Math.random() < dirtChance) {
             const d = document.createElement('div');
-            // Dirt Replacement
             const emojis = ['🧦', '🗑️', '📄', '🧶'];
             d.className = 'dirt-obj'; d.innerText = emojis[Math.floor(Math.random()*emojis.length)];
             d.style.left = (Math.random()*90 + 5) + '%';
@@ -2105,34 +3045,50 @@ const KissingGame = {
     }
 };
 
-const SleepGame = {
+const HatGame = {
     happiness: 0,
     orderId: -1,
+    birdY: 0, 
+    isJumping: false,
     
     start(oid) {
         Game.playSound('modal');
         this.happiness = 0;
         this.orderId = oid;
-        const img = document.getElementById('sleep-img');
-        img.src = "https://i.ibb.co/bRLJNFQR/image.png";
+        this.birdY = 0;
+        this.isJumping = false;
+
+        const bg = SLEEP_BGS[Math.floor(Math.random() * SLEEP_BGS.length)];
+        const phrase = SLEEP_PHRASES[Math.floor(Math.random() * SLEEP_PHRASES.length)];
+        
+        const gameEl = document.getElementById('hat-game');
+        gameEl.style.backgroundImage = bg;
+        document.getElementById('sleep-phrase').innerText = phrase;
+        
         document.getElementById('happy-bar-fill').style.width = '0%';
         document.getElementById('happy-val').innerText = '0';
+        
+        const bird = document.getElementById('sleep-bird');
+        bird.style.transform = `translateY(0px)`;
+        bird.classList.remove('bounce-shake');
     },
     
     click(e) {
+        e.stopPropagation();
         Game.playSound('pop');
-        const img = document.getElementById('sleep-img');
-        img.classList.remove('shake');
-        void img.offsetWidth;
-        img.classList.add('shake');
         
-        // Tongue Logic
+        const bird = document.getElementById('sleep-bird');
+        
+        bird.classList.remove('bounce-shake');
+        void bird.offsetWidth; 
+        bird.classList.add('bounce-shake');
+
         const tongue = document.createElement('div');
-        tongue.innerText = '👅';
+        tongue.innerText = '🍆';
         tongue.className = 'tongue-anim';
         tongue.style.left = e.clientX + 'px';
         tongue.style.top = e.clientY + 'px';
-        document.getElementById('sleep-game').appendChild(tongue);
+        document.getElementById('hat-game').appendChild(tongue);
         setTimeout(() => tongue.remove(), 500);
 
         if(this.happiness >= 100) return;
@@ -2148,6 +3104,11 @@ const SleepGame = {
     },
 
     update(dt) {
+        const bird = document.getElementById('sleep-bird');
+        if (!bird.classList.contains('bounce-shake')) {
+             bird.style.transform = 'translateY(0px)';
+        }
+
         if(this.happiness > 0 && this.happiness < 100) {
             this.happiness -= 10 * dt;
             if(this.happiness < 0) this.happiness = 0;
@@ -2157,35 +3118,163 @@ const SleepGame = {
     },
     
     finish() {
-        // Rain Animation then Close
         for(let i=0; i<50; i++) {
             const d = document.createElement('div');
-            d.innerText = '💧';
+            d.innerText = '🍆';
             d.className = 'rain-drop';
             d.style.left = Math.random() * 100 + '%';
             d.style.animationDuration = (1 + Math.random()) + 's';
             d.style.animationDelay = Math.random() + 's';
-            document.getElementById('sleep-game').appendChild(d);
+            document.getElementById('hat-game').appendChild(d);
         }
         
-        // Fade out
-        document.getElementById('sleep-game').style.transition = 'opacity 1s';
-        document.getElementById('sleep-game').style.opacity = '0';
+        document.getElementById('hat-game').style.transition = 'opacity 1s';
+        document.getElementById('hat-game').style.opacity = '0';
 
         setTimeout(() => {
-            document.getElementById('sleep-game').style.transition = 'none';
-            document.getElementById('sleep-game').style.opacity = '1';
+            document.getElementById('hat-game').style.transition = 'none';
+            document.getElementById('hat-game').style.opacity = '1';
             document.querySelectorAll('.rain-drop').forEach(r => r.remove());
             
             Game.closeModals();
-            const idx = Bear.orders.findIndex(x => x.id === this.orderId);
-            if(idx > -1) {
-                Bear.completeOrder(idx);
+            if(this.orderId > -1) {
+                const idx = Bear.orders.findIndex(x => x.id === this.orderId);
+                if(idx > -1) Bear.completeOrder(idx);
             }
             this.orderId = -1;
-            Bear.anger = 0;
-            Bear.say("اوففف كنتي تحفه");
+            
+            Bear.anger = Math.max(0, Bear.anger - 30);
+            Bear.updateStats();
+            Bear.say("اوففف كنتي مزه اوي");
         }, 2000);
+    }
+};
+
+const HangoutMode = {
+    active: false,
+    timer: 30,
+    bearX: 50,
+    targetItem: '',
+    fallingItems: [],
+    spawnTimer: 0,
+    orderId: -1,
+    
+    start(oid) {
+        Game.active = false;
+        this.active = true;
+        this.orderId = oid;
+        this.timer = 30;
+        this.bearX = 50;
+        this.fallingItems = [];
+        this.spawnTimer = 0;
+        
+        document.getElementById('hangout-game').style.display = 'block';
+        document.getElementById('ho-items-container').innerHTML = '';
+        
+        this.setNewTarget();
+    },
+    
+    setNewTarget() {
+        const types = ['🍩','🎁','💎','🍰','🥪',"🥐"];
+        this.targetItem = types[Math.floor(Math.random() * types.length)];
+        document.getElementById('ho-req').innerHTML = this.targetItem;
+    },
+    
+    click(e) {
+        const rect = document.getElementById('hangout-game').getBoundingClientRect();
+        this.bearX = ((e.clientX - rect.left) / rect.width) * 100;
+        document.getElementById('ho-bear').style.left = `calc(${this.bearX}% - 35px)`;
+    },
+    
+    update(dt) {
+        this.timer -= dt;
+        document.getElementById('ho-timer').innerText = Math.ceil(this.timer);
+        if(this.timer <= 0) return this.exit();
+        
+        // Spawn
+        this.spawnTimer -= dt;
+        if(this.spawnTimer <= 0) {
+            this.spawnItem();
+            this.spawnTimer = 0.8;
+        }
+        
+        // Update Items
+        const bearRect = document.getElementById('ho-bear').getBoundingClientRect();
+        
+        for(let i = this.fallingItems.length - 1; i >= 0; i--) {
+            const item = this.fallingItems[i];
+            item.y += 30 * dt;
+            item.el.style.top = item.y + '%';
+            
+            // Collision
+            const itemRect = item.el.getBoundingClientRect();
+            if (this.checkCollision(bearRect, itemRect)) {
+                if (item.type === this.targetItem) {
+                    Game.playSound('success');
+                    this.timer += 2;
+                    this.setNewTarget();
+                    this.showFeedback('👍');
+                } else {
+                    Game.playSound('sad');
+                    this.timer -= 5;
+                    this.showFeedback('👎');
+                }
+                item.el.remove();
+                this.fallingItems.splice(i, 1);
+                continue;
+            }
+            
+            if(item.y > 100) {
+                item.el.remove();
+                this.fallingItems.splice(i, 1);
+            }
+        }
+    },
+    
+    spawnItem() {
+        const types = ['🍎','🧸','💎','⚽','🚗'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        const el = document.createElement('div');
+        el.className = 'ho-falling-item';
+        el.innerText = type;
+        el.style.left = (Math.random() * 90 + 5) + '%';
+        el.style.top = '-10%';
+        document.getElementById('ho-items-container').appendChild(el);
+        
+        this.fallingItems.push({ el, type, y: -10 });
+    },
+    
+    checkCollision(r1, r2) {
+         return !(r2.left > r1.right || r2.right < r1.left || r2.top > r1.bottom || r2.bottom < r1.top);
+    },
+    
+    showFeedback(txt) {
+        const el = document.createElement('div');
+        el.innerText = txt;
+        el.style.position = 'absolute';
+        el.style.left = this.bearX + '%';
+        el.style.bottom = '20%';
+        el.style.fontSize = '40px';
+        el.style.animation = 'floatUp 1s forwards';
+        document.getElementById('hangout-game').appendChild(el);
+        setTimeout(() => el.remove(), 1000);
+    },
+    
+    exit() {
+        this.active = false;
+        document.getElementById('hangout-game').style.display = 'none';
+        Game.active = true;
+        Game.mode = 'normal';
+        requestAnimationFrame(t => { Game.lastTime = t; Game.loop(t); });
+        
+        if(this.orderId > -1) {
+            const idx = Bear.orders.findIndex(x => x.id === this.orderId);
+            if(idx > -1) Bear.completeOrder(idx);
+        }
+        
+        Bear.anger = 0; 
+        Bear.updateStats();
+        Bear.say("لعبنا وتعبنا! 😴");
     }
 };
 
@@ -2197,13 +3286,10 @@ const DramaGame = {
         this.active = true;
         this.orderIdx = idx;
         
-        // Pick Random State
         const bearState = DRAMA_DATA.bear_states[Math.floor(Math.random() * DRAMA_DATA.bear_states.length)];
         
-        // Pick 1 Correct "Cold" Answer
         const correct = DRAMA_DATA.cold_answers[Math.floor(Math.random() * DRAMA_DATA.cold_answers.length)];
         
-        // Pick 3 Incorrect "Normal" Answers
         const incorrect = [...DRAMA_DATA.normal_answers].sort(() => 0.5 - Math.random()).slice(0, 3);
         
         const choices = [{txt: correct, valid: true}];
@@ -2219,7 +3305,6 @@ const DramaGame = {
         
         let buttonsHtml = '';
         choices.forEach(c => {
-            // Only cold answer is strictly correct to proceed/win the interaction
             buttonsHtml += `<button class="drama-choice-btn" onclick="DramaGame.select(${c.valid})">${c.txt}</button>`;
         });
 
@@ -2314,7 +3399,7 @@ const GiftSystem = {
         box.innerText = "🎊";
         box.style.pointerEvents = 'none';
         
-        const isReal = Math.random() < 0.3; // 30% Chance for real gift
+        const isReal = Math.random() < 0.3; 
         if(isReal) {
             const keys = Object.keys(GIFTS);
             const key = keys[Math.floor(Math.random()*keys.length)];
@@ -2327,6 +3412,11 @@ const GiftSystem = {
         
         document.getElementById('gift-cont-btn').style.display = 'block';
     }
+};
+
+window.onload = function() {
+    ThemeSystem.init();
+    StreakSystem.init();
 };
 </script>
 </body>
